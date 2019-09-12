@@ -21,11 +21,18 @@ public class FileReader {
     String line = "";
     ArrayList<Rule> list = new ArrayList();
     ArrayList<Statement> statements = new ArrayList<Statement>();
+    String path;
     //int i = 0;
+    
+    public FileReader(String path){
+        this.path = path;
+    }
+    
+    
 
     public ArrayList<Rule> main() {
         try {
-            File file = new File("C:\\Users\\foppe\\Desktop\\sudoku-rules.txt");
+            File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
             int count = fileInformation(br.readLine());
             makeStatementList(count);

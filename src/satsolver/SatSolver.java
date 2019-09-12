@@ -17,17 +17,23 @@ public class SatSolver {
     private static ArrayList<Statement> statements = new ArrayList<Statement>();
     private static int time = 0;
     private static int timeReader = 0;
+    private static String path = "";
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        FileChooser chooser = new FileChooser();
+        path = chooser.main();
+        
+        
         int milis_startTime = 0;
         milis_startTime = (int) System.currentTimeMillis();
         int milis_startTimeReader = 0;
         milis_startTimeReader = (int) System.currentTimeMillis();
 
-        FileReader reader = new FileReader();
+        FileReader reader = new FileReader(path);
         statements = reader.getStatements();
         list = reader.main();
         
