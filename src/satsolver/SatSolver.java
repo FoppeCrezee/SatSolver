@@ -24,38 +24,46 @@ public class SatSolver {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        JOptionPane.showMessageDialog(null, "Choose sudoku rules which include the sudoku you want to solve");
-        
+        //First UI message
+        JOptionPane.showMessageDialog(null, "Choose sudoku rules which includes the sudoku you want to solve");
+        //Lets you choose the file you want to read
         FileChooser chooser = new FileChooser();
         path = chooser.main();
         
-        
-        int milis_startTime = 0;
-        milis_startTime = (int) System.currentTimeMillis();
+        //starts timer for reading the file
         int milis_startTimeReader = 0;
         milis_startTimeReader = (int) System.currentTimeMillis();
 
+        //Reads the file
         FileReader reader = new FileReader(path);
         statements = reader.getStatements();
         list = reader.main();
         
+        //Ends the timer for reading the file
         int millis_endTimeReader = 0;
         millis_endTimeReader = (int) System.currentTimeMillis();
         timeReader = millis_endTimeReader - milis_startTimeReader;
         
+        //starts timer for DP
+        int milis_startTime = 0;
+        milis_startTime = (int) System.currentTimeMillis();
         
+        //Starts DP algorithm
         RulesReader rulesReader = new RulesReader();
         statements = rulesReader.dp(list, statements);
         
-        
+        //Ends dp timer
         int millis_endTime = 0;
         millis_endTime = (int) System.currentTimeMillis();
         time = millis_endTime - milis_startTime;
+        
+        //prints the result
         printStatements();
-        // TODO code application logic here
     }
 
+    /**
+     * Prints only the statements which are true
+     */
     private static void printStatements() {
         System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
         System.out.println("Calculating solution took: " + time * 0.001 + " seconds");

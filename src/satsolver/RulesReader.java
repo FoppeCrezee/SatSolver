@@ -18,10 +18,17 @@ public class RulesReader {
     private ArrayList<Statement> statements;
     private Random r = new Random();
 
+    
+    /**
+     *  Is the main algorithm which consist of checking if there is a unit clause, a pure literal or making a split.
+     *  @param list is the list with all the different clauses
+     *  @param statements is the list with all the variables (literals)
+     *  @return This returns an ArrayList with all the statements
+     */
     public ArrayList<Statement> dp(ArrayList<Rule> list, ArrayList<Statement> statements) {
         this.statements = statements;
         this.list = list;
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return statements;
         } else {
 
@@ -32,7 +39,7 @@ public class RulesReader {
                 return statements;
             }
 
-            if (list.size() != 0) {
+            if (!list.isEmpty()) {
                 boolean random = r.nextBoolean();
                 if (!pickRandom(random)) {
                     pickRandom(!random);
@@ -50,16 +57,21 @@ public class RulesReader {
         return statements;
     }
 
+    /**
+     * @param random is the random boolean value which the next empty variable will be made
+     * @return false if there is an empty clause, which means there was made a mistake. It returns true if no empty clauses were found.
+     */
     private boolean pickRandom(boolean random) {
         int next = getNextEmptyStatement();
         if (next == -1) {
             return false;
         }
+        //if the boolean is true
         if (random) {
             statements.get(next).setValue(1);
             //System.out.println(statements.get(next).getName() + " wordt " + 1 + " want Random");
             removeClause(statements.get(next).getName());
-            if (list.size() == 0) {
+            if (list.isEmpty()) {
                 return true;
             } else {
                 dp(list, statements);
@@ -67,11 +79,12 @@ public class RulesReader {
             if (checkEmptyClause()) {
                 return false;
             }
+        //if the boolean is false
         } else {
             statements.get(next).setValue(-1);
             removeClause(statements.get(next).getName() * -1);
             //System.out.println(statements.get(next).getName() + " wordt " + -1 + " want Random");
-            if (list.size() == 0) {
+            if (list.isEmpty()) {
                 return true;
             } else {
                 dp(list, statements);
@@ -83,18 +96,25 @@ public class RulesReader {
         return true;
     }
 
+    /**
+     * @return returns true if there is an empty clause in the list. Returns false if no empty list has been found.
+     */
     private boolean checkEmptyClause() {
         checkUnitClause();
         checkPureLiteral();
 
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getRules().size() == 0) {
+            if (list.get(i).getRules().isEmpty()) {
                 return true;
             }
         }
         return false;
     }
 
+    
+    /**
+     * @return Returns an ArrayList with all the statements after checking if there is a unit clause
+     */
     private ArrayList<Statement> checkUnitClause() {
         //System.out.println("test");
         int variable = 0;
