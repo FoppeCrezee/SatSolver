@@ -6,6 +6,7 @@
 package satsolver;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,6 +24,8 @@ public class SatSolver {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        JOptionPane.showMessageDialog(null, "Choose sudoku rules which include the sudoku you want to solve");
         
         FileChooser chooser = new FileChooser();
         path = chooser.main();
