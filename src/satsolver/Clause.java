@@ -8,17 +8,17 @@ package satsolver;
 import java.util.ArrayList;
 
 /**
- *
+ * This is a clause
  * @author foppe
  */
-public class Rule {
+public class Clause {
 
     private boolean isTrue = false;
     private ArrayList<Integer> statements = new ArrayList<Integer>();
 
     String lijn = "";
 
-    public Rule(String list) {
+    public Clause(String list) {
         for (int i = 0; i < list.length(); i++) {
             if (!list.substring(i, i + 1).equals(" ")) {
                 lijn = lijn + list.substring(i, i + 1);

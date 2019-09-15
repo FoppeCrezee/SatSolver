@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- *
+ * Is the main Algorithm
  * @author foppe
  */
 public class RulesReader {
 
-    private ArrayList<Rule> list;
-    private ArrayList<Statement> statements;
+    private ArrayList<Clause> listOfClauses;
+    private ArrayList<Literal> statements;
     private Random r = new Random();
 
     
@@ -25,9 +25,9 @@ public class RulesReader {
      *  @param statements is the list with all the variables (literals)
      *  @return This returns an ArrayList with all the statements
      */
-    public ArrayList<Statement> dp(ArrayList<Rule> list, ArrayList<Statement> statements) {
+    public ArrayList<Literal> dp(ArrayList<Clause> list, ArrayList<Literal> statements) {
         this.statements = statements;
-        this.list = list;
+        this.listOfClauses = list;
         if (list.isEmpty()) {
             return statements;
         } else {
@@ -35,10 +35,12 @@ public class RulesReader {
             if (checkUnitClause() != null) {
                 return statements;
             }
+            
+            //Don't know if we need this very timeconsuming
             if (checkPureLiteral() != null) {
                 return statements;
             }
-
+            
             if (!list.isEmpty()) {
                 boolean random = r.nextBoolean();
                 if (!pickRandom(random)) {
@@ -69,12 +71,11 @@ public class RulesReader {
         //if the boolean is true
         if (random) {
             statements.get(next).setValue(1);
-            //System.out.println(statements.get(next).getName() + " wordt " + 1 + " want Random");
             removeClause(statements.get(next).getName());
-            if (list.isEmpty()) {
+            if (listOfClauses.isEmpty()) {
                 return true;
             } else {
-                dp(list, statements);
+                dp(listOfClauses, statements);
             }
             if (checkEmptyClause()) {
                 return false;
@@ -83,11 +84,10 @@ public class RulesReader {
         } else {
             statements.get(next).setValue(-1);
             removeClause(statements.get(next).getName() * -1);
-            //System.out.println(statements.get(next).getName() + " wordt " + -1 + " want Random");
-            if (list.isEmpty()) {
+            if (listOfClauses.isEmpty()) {
                 return true;
             } else {
-                dp(list, statements);
+                dp(listOfClauses, statements);
             }
             if (checkEmptyClause()) {
                 return false;
@@ -103,8 +103,8 @@ public class RulesReader {
         checkUnitClause();
         checkPureLiteral();
 
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getRules().isEmpty()) {
+        for (int i = 0; i < listOfClauses.size(); i++) {
+            if (listOfClauses.get(i).getRules().isEmpty()) {
                 return true;
             }
         }
@@ -115,29 +115,26 @@ public class RulesReader {
     /**
      * @return Returns an ArrayList with all the statements after checking if there is a unit clause
      */
-    private ArrayList<Statement> checkUnitClause() {
-        //System.out.println("test");
+    private ArrayList<Literal> checkUnitClause() {
         int variable = 0;
 
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getRules().size() == 1) {
-                variable = list.get(i).getRules().get(0);
+        for (int i = 0; i < listOfClauses.size(); i++) {
+            if (listOfClauses.get(i).getRules().size() == 1) {
+                variable = listOfClauses.get(i).getRules().get(0);
                 //int variable komt maar 1 keer voor
                 for (int j = 0; j < statements.size(); j++) {
                     if ((statements.get(j).getName() == variable) || (statements.get(j).getName() == variable * -1)) {
 
                         if (variable > 0) {
                             statements.get(j).setValue(1);
-                            //System.out.println(statements.get(j).getName() + " wordt " + 1 + " want UnitClause");
                             removeClause(variable);
-                            if (dp(list, statements) != null) {
+                            if (dp(listOfClauses, statements) != null) {
                                 return statements;
                             }
                         } else {
                             statements.get(j).setValue(-1);
-                            //System.out.println(statements.get(j).getName() + " wordt " + -1 + " want UnitClause");
                             removeClause(variable);
-                            if (dp(list, statements) != null) {
+                            if (dp(listOfClauses, statements) != null) {
                                 return statements;
                             }
                         }
@@ -145,42 +142,38 @@ public class RulesReader {
                     }
 
                 }
-                //System.out.println(variable);
             }
         }
 
-        if (list.size() == 0) {
+        if (listOfClauses.size() == 0) {
             return statements;
         }
         return null;
     }
 
-    private ArrayList<Statement> checkPureLiteral() {
+    private ArrayList<Literal> checkPureLiteral() {
         for (int i = 0; i < statements.size(); i++) {
             if (statements.get(i).getValue() == 0) {
                 if (checkNumber(statements.get(i).getName()) == 1) {
-                    //System.out.println(statements.get(i).getName() + " is alleen maar positief");
                     statements.get(i).setValue(1);
-                    //System.out.println(statements.get(i).getName() + " wordt " + 1 + " want puur");
                     removeClause(statements.get(i).getName());
-                    if (dp(list, statements) != null) {
+                    System.out.println("Een pure");
+                    if (dp(listOfClauses, statements) != null) {
                         return statements;
                     }
                 } else if (checkNumber(statements.get(i).getName()) == -1) {
-                    //System.out.println(statements.get(i).getName() + " is alleen maar negatief");
                     statements.get(i).setValue(-1);
-                    //System.out.println(statements.get(i).getName() + " wordt " + -1 + " want puur");
                     removeClause(statements.get(i).getName() * -1);
-                    if (dp(list, statements) != null) {
+                    System.out.println("Een pure");
+                    if (dp(listOfClauses, statements) != null) {
                         return statements;
                     }
                 } else {
-                    //System.out.println(statements.get(i).getName() + " We weten het nog niet");
                 }
             }
         }
-        if (list.size() == 0) {
-            dp(list, statements);
+        if (listOfClauses.size() == 0) {
+            dp(listOfClauses, statements);
         }
         return null;
     }
@@ -193,7 +186,6 @@ public class RulesReader {
                 }
             }
         } catch (Exception e) {
-            //System.out.println("Zie je wel");
             return -1;
         }
         return -1;
@@ -202,11 +194,11 @@ public class RulesReader {
     private int checkNumber(int number) {
         int positive = 0;
         int negative = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).checkRuleNegative(number)) {
+        for (int i = 0; i < listOfClauses.size(); i++) {
+            if (listOfClauses.get(i).checkRuleNegative(number)) {
                 negative++;
             }
-            if (list.get(i).checkRulePositive(number)) {
+            if (listOfClauses.get(i).checkRulePositive(number)) {
                 positive++;
             }
         }
@@ -221,28 +213,21 @@ public class RulesReader {
 
     private void removeClause(int number) {
         if (number > 0) {
-            // System.out.println(number);
-            for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).checkRulePositive(number)) {
-                    list.remove(i);
+            for (int i = 0; i < listOfClauses.size(); i++) {
+                if (listOfClauses.get(i).checkRulePositive(number)) {
+                    listOfClauses.remove(i);
                     removeClause(number);
-                    //System.out.println("Deze clause gaat weg " + number);
-                } else if (list.get(i).checkRuleNegative(number)) {
-                    list.get(i).removeNumber(number * -1);
-                    //System.out.println("Deze gaat weg " + number);
+                } else if (listOfClauses.get(i).checkRuleNegative(number)) {
+                    listOfClauses.get(i).removeNumber(number * -1);
                 }
             }
         } else if (number < 0) {
-            //  System.out.println(number + "jahf;aug" );
-            for (int i = 0; i < list.size(); i++) {
-                //System.out.println(number);
-                if (list.get(i).checkRulePositive(number)) {
-                    list.remove(i);
+            for (int i = 0; i < listOfClauses.size(); i++) {
+                if (listOfClauses.get(i).checkRulePositive(number)) {
+                    listOfClauses.remove(i);
                     removeClause(number);
-                    //System.out.println("Deze clause gaat weg " + number);
-                } else if (list.get(i).checkRulePositive(number * -1)) {
-                    list.get(i).removeNumber(number * -1);
-                    //System.out.println("Deze gaat weg " + number);
+                } else if (listOfClauses.get(i).checkRulePositive(number * -1)) {
+                    listOfClauses.get(i).removeNumber(number * -1);
                 }
             }
         }

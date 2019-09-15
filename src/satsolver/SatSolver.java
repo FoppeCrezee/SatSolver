@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * Starts the whole algorithm
  * @author foppe
  */
 public class SatSolver {
 
-    private static ArrayList<Rule> list = new ArrayList();
-    private static ArrayList<Statement> statements = new ArrayList<Statement>();
+    private static ArrayList<Clause> list = new ArrayList();
+    private static ArrayList<Literal> statements = new ArrayList<Literal>();
     private static int time = 0;
     private static int timeReader = 0;
     private static String path = "";

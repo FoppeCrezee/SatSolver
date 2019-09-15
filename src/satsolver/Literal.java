@@ -6,15 +6,15 @@
 package satsolver;
 
 /**
- *
+ * this is a literal
  * @author foppe
  */
-public class Statement {
+public class Literal {
 
-    int name;
-    int value = 0;
+    private int name;
+    private int value = 0;
 
-    public Statement(int name) {
+    public Literal(int name) {
         this.name = name;
     }
 

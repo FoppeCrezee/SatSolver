@@ -12,6 +12,7 @@ import javax.swing.filechooser.FileSystemView;
 /**
  *
  * @author foppe
+ * @deprecated Mast run code from a line which: see discription on Canvas
  */
 public class FileChooser {
     String path = "";

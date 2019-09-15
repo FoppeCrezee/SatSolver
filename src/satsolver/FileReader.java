@@ -13,14 +13,14 @@ import javafx.stage.FileChooser;
 import javax.swing.JFileChooser;
 
 /**
- *
+ * Reads in the file
  * @author foppe
  */
 public class FileReader {
 
     String line = "";
-    ArrayList<Rule> list = new ArrayList();
-    ArrayList<Statement> statements = new ArrayList<Statement>();
+    ArrayList<Clause> list = new ArrayList();
+    ArrayList<Literal> statements = new ArrayList<Literal>();
     String path;
     //int i = 0;
     
@@ -30,7 +30,7 @@ public class FileReader {
     
     
 
-    public ArrayList<Rule> main() {
+    public ArrayList<Clause> main() {
         try {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
@@ -39,7 +39,7 @@ public class FileReader {
             while ((line = br.readLine()) != null) {
                 String[] gegeven = line.split("0");
                 String test = gegeven[0];
-                Rule rule = new Rule(test);
+                Clause rule = new Clause(test);
                 if (!rule.checkTaut()) {
                     list.add(rule);
                 }
@@ -71,12 +71,12 @@ public class FileReader {
     private void makeStatementList(int count) {
         for (int i = 1; i < count - 110; i++) {
             if (((i + 110) % 10 != 0) && ((((i + 110)/10) % 10) != 0)) {
-                statements.add(new Statement(i + 110));
+                statements.add(new Literal(i + 110));
             }
         }
     }
 
-    public ArrayList<Statement> getStatements() {
+    public ArrayList<Literal> getStatements() {
         return statements;
     }
 
