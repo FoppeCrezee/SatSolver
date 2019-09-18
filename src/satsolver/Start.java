@@ -41,7 +41,6 @@ public class Start {
         int index = Integer.parseInt(JOptionPane.showInputDialog(null, "Which line in the file do you want to solve?"));
 //        path = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
 //        sudokuPath = "C:\\Users\\foppe\\Desktop\\1000_sudokus.txt";
-        
 
         //starts timer for reading the file
         int milis_startTimeReader = 0;
@@ -55,12 +54,11 @@ public class Start {
         startingLiterals = readerStart.getStatements();
         startingClauses = readerStart.main();
 
-        sudokuClauses = reader.SudokuReader(sudokuPath, 2);
+        //merges all new clauses from the given numbers in the sudoku
+        sudokuClauses = reader.SudokuReader(sudokuPath, index);
         clauses.addAll(sudokuClauses);
         startingClauses.addAll(sudokuClauses);
 
-//        ArrayList<Clause> clauses2 = new ArrayList<Clause>(clauses);
-//        clauses2 = clauses;
         //Ends the timer for reading the file
         int millis_endTimeReader = 0;
         millis_endTimeReader = (int) System.currentTimeMillis();

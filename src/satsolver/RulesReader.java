@@ -19,8 +19,6 @@ public class RulesReader {
     private ArrayList<Literal> listOFLiterals;
     private ArrayList<Clause> startingClauses;
     private ArrayList<Literal> startingLiterals;
-    private ArrayList<Clause> listOfClauses2;
-    private ArrayList<Literal> literals2;
     private Random r = new Random();
 
     /**
@@ -43,35 +41,28 @@ public class RulesReader {
     public ArrayList<Literal> dp() {
 
         if (listOfClauses.isEmpty()) {
-//            System.out.println("No Clauses left");
             return listOFLiterals;
         } else {
 
             checkUnitClause();
-//            if (checkUnitClause() != null || this.checkEmptyClause() == true) {
-//                return listOFLiterals;
-//            }
-            //Don't know if we need this very timeconsuming
+
+//            Don't know if we need this very timeconsuming
 //            checkPureLiteral();
-//            if (checkPureLiteral() != null) {
-//                return statements;
-//            }
+
             if (!listOfClauses.isEmpty()) {
-                int next = getNextUnknownLiteral(); //1234
+                int next = getNextUnknownLiteral();
                 boolean random = r.nextBoolean();
                 random = false;
-//System.out.println("Aantal Clauses2 Voor: " + listOfClauses2.size());
-                if (!pickRandom(random, next)) {//234
+                if (!pickRandom(random, next)) {
 
-//                    System.out.println("Aantal Clauses Voor: " + listOfClauses.size());
-//                    System.out.println("Aantal Clauses2 Voor: " + listOfClauses2.size());
                     //listOfClauses = listOfClauses2;
-//                    System.out.println("Aantal Clauses na: " + listOfClauses.size());
-//                    System.out.println("Foutje");
+
+                    //mistake was made, so we need to reset all the data.
                     listOfClauses = startingClauses;
-                    System.out.println("g");
                     listOFLiterals = startingLiterals;
-//                    checkUnitClause();
+                    
+                    checkUnitClause();
+                    
                     pickRandom(!random, next);
 
 //                    RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals);
@@ -93,7 +84,6 @@ public class RulesReader {
 //        if (!listOfClauses.isEmpty() || this.checkEmptyClause()) {
 //            return null;
 //        }
-        //System.out.println("Eomd");
         return listOFLiterals;
     }
 
@@ -104,20 +94,15 @@ public class RulesReader {
      * mistake. It returns true if no empty clauses were found.
      */
     private boolean pickRandom(boolean random, int next) {
-//        listOFLiterals.get(next).setValue(-1);
-//        return false;
+        //if no new variable is found return false
         if (next == -1) {
-            System.out.println("Geen nieuwe wmeer");
-//            listOFLiterals = startingLiterals;
             return false;
         }
-        //System.out.println("Wel weer nieuwe");
         //if the boolean is true
         if (random) {
             listOFLiterals.get(next).setValue(1);
             removeClause(listOFLiterals.get(next).getName());
             if (listOfClauses.isEmpty()) {
-                System.out.println("JAJAJJAJA");
                 return true;
             } else {
                 if (checkEmptyClause()) {
@@ -125,6 +110,7 @@ public class RulesReader {
                     return false;
                 }
                 if (!listOfClauses.isEmpty()) {
+                    //starts a new iteration of recursion.
                     RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals, new ArrayList<Clause>(startingClauses), new ArrayList<Literal>(startingLiterals));
                     listOFLiterals = iteration.dp();
                 }
@@ -139,7 +125,6 @@ public class RulesReader {
             listOFLiterals.get(next).setValue(-1);
             removeClause(listOFLiterals.get(next).getName() * -1);
             if (listOfClauses.isEmpty()) {
-                System.out.println("JAJAJJAJA");
                 return true;
             } else {
                 if (checkEmptyClause()) {
@@ -147,6 +132,7 @@ public class RulesReader {
                     return false;
                 }
                 if (!listOfClauses.isEmpty()) {
+                    //starts a new iteration of recursion.
                     RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals, new ArrayList<Clause>(startingClauses), new ArrayList<Literal>(startingLiterals));
                     listOFLiterals = iteration.dp();
                 }
@@ -267,6 +253,11 @@ public class RulesReader {
         }
     }
 
+    /**
+     * Removes a literal from a clause if the negation from that literal is found.
+     * Removes a clause from the list when the clause contains that literal
+     * @param number is the literal which we want to remove.
+     */
     private void removeClause(int number) {
         // System.out.println("verwijder: " + number);
         if (number > 0) {
@@ -274,11 +265,9 @@ public class RulesReader {
                 if (listOfClauses.get(i).checkRulePositive(number)) {
                     listOfClauses.remove(i);
                     i--;
-//                    System.out.println("remove clause beacause: " + number + "");
                 } else if (listOfClauses.get(i).checkRuleNegative(number)) {
                     listOfClauses.get(i).removeNumber(number * -1);
                     i--;
-//                    System.out.println("remove literal beacause: " + number + "");
                 }
             }
         } else if (number < 0) {
@@ -286,10 +275,8 @@ public class RulesReader {
                 if (listOfClauses.get(i).checkRulePositive(number)) {
                     listOfClauses.remove(i);
                     i--;
-//                    System.out.println("remove clause beacause: " + number + "");
                 } else if (listOfClauses.get(i).checkRulePositive(number * -1)) {
                     listOfClauses.get(i).removeNumber(number * -1);
-//                    System.out.println("remove literal beacause: " + number + "");
                     i--;
                 }
             }

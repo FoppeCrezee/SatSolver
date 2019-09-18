@@ -6,11 +6,7 @@
 package satsolver;
 
 import java.io.*;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import javafx.stage.FileChooser;
-import javax.swing.JFileChooser;
 
 /**
  * Reads in the file
@@ -49,6 +45,11 @@ public class FileReader {
         return list;
     }
 
+    /**
+     * Reads in the sudokufile and converts every given number to a clause
+     * @param path is the path to the sudokufile
+     * @param l is the index of the line which we want to read
+     */
     public ArrayList<Clause> SudokuReader(String path, int l) {
         ArrayList<Clause> sudokuClauses = new ArrayList<>();
         try {
