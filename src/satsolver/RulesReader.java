@@ -46,9 +46,6 @@ public class RulesReader {
 //            System.out.println("No Clauses left");
             return listOFLiterals;
         } else {
-//            if(this.checkEmptyClause()){
-//                System.out.println("hiero");
-//            }
 
             checkUnitClause();
 //            if (checkUnitClause() != null || this.checkEmptyClause() == true) {
@@ -74,7 +71,7 @@ public class RulesReader {
                     listOfClauses = startingClauses;
                     System.out.println("g");
                     listOFLiterals = startingLiterals;
-
+//                    checkUnitClause();
                     pickRandom(!random, next);
 
 //                    RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals);
@@ -94,9 +91,7 @@ public class RulesReader {
         }
 
 //        if (!listOfClauses.isEmpty() || this.checkEmptyClause()) {
-//            RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals);
-//            listOFLiterals = iteration.dp();
-////                return statements;
+//            return null;
 //        }
         //System.out.println("Eomd");
         return listOFLiterals;
@@ -113,26 +108,28 @@ public class RulesReader {
 //        return false;
         if (next == -1) {
             System.out.println("Geen nieuwe wmeer");
-            return true;
+//            listOFLiterals = startingLiterals;
+            return false;
         }
-        System.out.println("Wel weer nieuwe");
+        //System.out.println("Wel weer nieuwe");
         //if the boolean is true
         if (random) {
             listOFLiterals.get(next).setValue(1);
             removeClause(listOFLiterals.get(next).getName());
             if (listOfClauses.isEmpty()) {
+                System.out.println("JAJAJJAJA");
                 return true;
             } else {
                 if (checkEmptyClause()) {
-                    //System.out.println("and wrong");
+                    System.out.println("and wrong");
                     return false;
                 }
                 if (!listOfClauses.isEmpty()) {
-                    RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals, startingClauses, startingLiterals);
+                    RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals, new ArrayList<Clause>(startingClauses), new ArrayList<Literal>(startingLiterals));
                     listOFLiterals = iteration.dp();
                 }
                 if (checkEmptyClause()) {
-                    //System.out.println("and wrong");
+                    System.out.println("and wrong");
                     return false;
                 }
             }
@@ -142,17 +139,19 @@ public class RulesReader {
             listOFLiterals.get(next).setValue(-1);
             removeClause(listOFLiterals.get(next).getName() * -1);
             if (listOfClauses.isEmpty()) {
+                System.out.println("JAJAJJAJA");
                 return true;
             } else {
                 if (checkEmptyClause()) {
-                    //System.out.println("and wrong");
+                    System.out.println("and wrong");
                     return false;
                 }
-                RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals, startingClauses, startingLiterals);
-                listOFLiterals = iteration.dp();
-
+                if (!listOfClauses.isEmpty()) {
+                    RulesReader iteration = new RulesReader(listOfClauses, listOFLiterals, new ArrayList<Clause>(startingClauses), new ArrayList<Literal>(startingLiterals));
+                    listOFLiterals = iteration.dp();
+                }
                 if (checkEmptyClause()) {
-                    //System.out.println("and wrong");
+                    System.out.println("and wrong");
                     return false;
                 }
             }
@@ -166,17 +165,13 @@ public class RulesReader {
      * false if no empty list has been found.
      */
     private boolean checkEmptyClause() {
-//        checkUnitClause();
-//        checkPureLiteral();
-        //System.out.print("Checking ");
-
         for (int i = 0; i < listOfClauses.size(); i++) {
             if (listOfClauses.get(i).getRules().isEmpty()) {
-                //System.out.println("and wrong");
+                System.out.println("Empty!");
                 return true;
             }
         }
-        //System.out.println("and true");
+        System.out.println("not Empty");
         return false;
     }
 
@@ -201,24 +196,12 @@ public class RulesReader {
                                 System.out.println(listOFLiterals.get(j).getName());
                             }
                             removeClause(variable);
-//                            i--;
-                            i = -1;
-//                            variable = 0;
-//                             RulesReader iteration = new RulesReader(listOfClauses, statements);
-//                    if (iteration.dp() != null || this.checkEmptyClause() == true) {
-//                                return statements;
-//                            }
+                            i = 0;
                         } else {
 //                            System.out.println("Set " + variable + " -1");
                             listOFLiterals.get(j).setValue(-1);
                             removeClause(variable);
-//                            i--;
-                            i = -1;
-//                            variable = 0;
-//                             RulesReader iteration = new RulesReader(listOfClauses, statements);
-//                    if (iteration.dp() != null || this.checkEmptyClause() == true) {
-//                                return statements;
-//                            }
+                            i = 0;
                         }
 
                     }
@@ -226,10 +209,6 @@ public class RulesReader {
                 }
             }
         }
-//        if (dp(listOfClauses, statements) != null || this.checkEmptyClause() == true) {
-//            return statements;
-//        }
-
         if (listOfClauses.size() == 0) {
             return listOFLiterals;
         } else {
@@ -244,27 +223,14 @@ public class RulesReader {
                     listOFLiterals.get(i).setValue(1);
                     removeClause(listOFLiterals.get(i).getName());
                     System.out.println("Een pure");
-//                    RulesReader iteration = new RulesReader(listOfClauses, statements);
-
-//                    if (iteration.dp() != null || this.checkEmptyClause() == true) {
-//                        return statements;
-//                    }
                 } else if (checkNumber(listOFLiterals.get(i).getName()) == -1) {
                     listOFLiterals.get(i).setValue(-1);
                     removeClause(listOFLiterals.get(i).getName() * -1);
                     System.out.println("Een pure");
-//                    RulesReader iteration = new RulesReader(listOfClauses, statements);
-//                    if (iteration.dp() != null || this.checkEmptyClause() == true) {
-//                        return statements;
-//                    }
                 } else {
                 }
             }
         }
-//        if (!listOfClauses.isEmpty()) {
-//            RulesReader iteration = new RulesReader(listOfClauses, statements);
-//            statements = iteration.dp();
-//        }
         return null;
     }
 

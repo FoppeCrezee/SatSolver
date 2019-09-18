@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 
 /**
  * Reads in the file
+ *
  * @author foppe
  */
 public class FileReader {
@@ -23,12 +24,10 @@ public class FileReader {
     ArrayList<Literal> statements = new ArrayList<Literal>();
     String path;
     //int i = 0;
-    
-    public FileReader(String path){
+
+    public FileReader(String path) {
         this.path = path;
     }
-    
-    
 
     public ArrayList<Clause> main() {
         try {
@@ -50,7 +49,38 @@ public class FileReader {
         return list;
     }
 
-    
+    public ArrayList<Clause> SudokuReader(String path, int l) {
+        ArrayList<Clause> sudokuClauses = new ArrayList<>();
+        try {
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new java.io.FileReader(file));
+            int k = l+1;
+            for(int f = 0; f < l; f++){
+                line = br.readLine();
+            }
+            
+            while (((line = br.readLine()) != null) && l != k) {
+                String sudoku = line;
+
+                for (int i = 9; i < 90; i++) {
+                    String number = "";
+                    number = number + i / 9;
+                    number = number + ((i % 9) + 1);
+                    if (!sudoku.substring(i - 9, i - 8).equals(".")) {
+                        number = number + sudoku.substring(i - 9, i - 8);
+                        Clause clause = new Clause(number + " ");
+                        sudokuClauses.add(clause);
+                    } else {
+                    }
+                }
+                l++;
+            }
+
+        } catch (Exception e) {
+        }
+        return sudokuClauses;
+    }
+
     private int fileInformation(String information) {
         String testje = information.substring(6, information.length());
         //int count;
@@ -70,7 +100,7 @@ public class FileReader {
 
     private void makeStatementList(int count) {
         for (int i = 1; i < count - 110; i++) {
-            if (((i + 110) % 10 != 0) && ((((i + 110)/10) % 10) != 0)) {
+            if (((i + 110) % 10 != 0) && ((((i + 110) / 10) % 10) != 0)) {
                 statements.add(new Literal(i + 110));
             }
         }

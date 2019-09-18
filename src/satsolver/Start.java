@@ -7,6 +7,7 @@ package satsolver;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,32 +19,45 @@ public class Start {
     private ArrayList<Clause> startingClauses;
     private ArrayList<Literal> statementsFinal;
     private ArrayList<Literal> startingLiterals;
+    //all clauses from reading the sudoku
+    private ArrayList<Clause> sudokuClauses;
 
     private int time = 0;
     private int timeReader = 0;
-    private String path = "";
+    private String path;
+    private String sudokuPath;
 
     public void main() {
         clauses = new ArrayList<Clause>();
 
-        //First UI message
-        //JOptionPane.showMessageDialog(null, "Choose sudoku rules which includes the sudoku you want to solve");
-        //Lets you choose the file you want to read
-        //FileChooser chooser = new FileChooser();
-        //path = chooser.main();
-        path = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
+//        First UI message
+        JOptionPane.showMessageDialog(null, "Choose sudoku rules which includes the sudoku you want to solve");
+//        Lets you choose the file you want to read
+        FileChooser chooser = new FileChooser();
+        path = chooser.main();
+        JOptionPane.showMessageDialog(null, "Now choose the file with all the sudokus");
+        sudokuPath = chooser.main();
+        JOptionPane.showMessageDialog(null, "Which line in the file do you want to solve?");
+        int index = Integer.parseInt(JOptionPane.showInputDialog(null, "Which line in the file do you want to solve?"));
+//        path = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
+//        sudokuPath = "C:\\Users\\foppe\\Desktop\\1000_sudokus.txt";
+        
 
         //starts timer for reading the file
         int milis_startTimeReader = 0;
         milis_startTimeReader = (int) System.currentTimeMillis();
 
-        //Reads the file
+        //Reads all the file
         FileReader reader = new FileReader(path);
         statementsFinal = reader.getStatements();
         clauses = reader.main();
         FileReader readerStart = new FileReader(path);
         startingLiterals = readerStart.getStatements();
         startingClauses = readerStart.main();
+
+        sudokuClauses = reader.SudokuReader(sudokuPath, 2);
+        clauses.addAll(sudokuClauses);
+        startingClauses.addAll(sudokuClauses);
 
 //        ArrayList<Clause> clauses2 = new ArrayList<Clause>(clauses);
 //        clauses2 = clauses;
@@ -112,6 +126,7 @@ public class Start {
             }
         }
 
+        System.out.println(startingClauses.size());
         System.out.println(clauses.size());
     }
 }
