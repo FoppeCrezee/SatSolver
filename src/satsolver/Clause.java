@@ -39,6 +39,7 @@ public class Clause {
             if (statements.size() != 0) {
                 for (int j = 0; i < statements.size(); i++) {
                     if (statements.get(j) == getal * -1) {
+                        System.out.println("TAUt");
                         return true;
                     }
                 }
@@ -77,6 +78,7 @@ public class Clause {
     public boolean checkRuleNegative(int number) {
         for (int i = 0; i < statements.size(); i++) {
             if (statements.get(i) == number * -1) {
+//                System.out.println("Found him");
                 return true;
             }
         }
