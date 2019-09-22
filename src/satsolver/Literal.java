@@ -7,15 +7,30 @@ package satsolver;
 
 /**
  * this is a literal
+ *
  * @author foppe
  */
-public class Literal {
+public class Literal implements Cloneable {
 
     private int name;
     private int value = 0;
 
     public Literal(int name) {
         this.name = name;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Literal clone = null;
+        try {
+            clone = (Literal) super.clone();
+
+            //Copy new date object to cloned method
+//            clone.setValue((int) this.getValue().clone());
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        return clone;
     }
 
     public void setValue(int value) {

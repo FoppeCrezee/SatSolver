@@ -9,9 +9,10 @@ import java.util.ArrayList;
 
 /**
  * This is a clause
+ *
  * @author foppe
  */
-public class Clause {
+public class Clause implements Cloneable {
 
     private boolean isTrue = false;
     private ArrayList<Integer> statements = new ArrayList<Integer>();
@@ -33,6 +34,20 @@ public class Clause {
 
     }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Clause clone = null;
+        try {
+            clone = (Clause) super.clone();
+
+            //Copy new date object to cloned method
+            clone.setRules((ArrayList<Integer>) this.getRules().clone());
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        return clone;
+    }
+
     public boolean checkTaut() {
         for (int i = 0; i < statements.size(); i++) {
             int getal = statements.get(i);
@@ -49,6 +64,11 @@ public class Clause {
     }
     //TODO if statement is negative and positive in same statement delete
 
+    private void setRules(ArrayList<Integer> list){
+        statements = list;
+    }
+    
+    
     public boolean getTrue() {
         return isTrue;
     }
