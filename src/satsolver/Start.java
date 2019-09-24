@@ -26,7 +26,15 @@ public class Start {
     private int timeReader = 0;
     private String path;
     private String sudokuPath;
+    
+    private int heuristics;
+    private String fileName;
 
+    public Start(int heuristics, String fileName){
+        this.heuristics = heuristics;
+        this.fileName = fileName;
+    }
+    
     public void main() throws CloneNotSupportedException {
         clauses = new ArrayList<Clause>();
 
@@ -70,10 +78,10 @@ public class Start {
         milis_startTime = (int) System.currentTimeMillis();
 
         //Starts DP algorithm
-        System.out.println(clauses.size());
+//        System.out.println(clauses.size());
         RulesReader rulesReader = new RulesReader();
         statementsFinal = rulesReader.dp(clauses, statementsFinal, startingClauses, startingLiterals);
-        System.out.println("Na: " + clauses.size());
+//        System.out.println("Na: " + clauses.size());
 
         //Ends dp timer
         int millis_endTime = 0;
@@ -86,14 +94,9 @@ public class Start {
 
     private void printStatements() {
 
-//        for (int i = 0; i < statements.size(); i++) {
-//            if (statements.get(i).getValue() == 1) {
-//                System.out.println(statements.get(i).getName());
-//            }
-//        }
         System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
         System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
-        System.out.println("|------------------------------------|");
+        System.out.println("|-----------------------------------|");
         System.out.print("|  ");
         int j = 0;
         int k = 0;
@@ -105,10 +108,13 @@ public class Start {
                     j++;
                     if (j % 9 == 0) {
                         System.out.println("|");
-                        System.out.print("|  ");
+                        
                         k++;
                         if (k % 3 == 0) {
-                            System.out.println("----------------------------------|");
+                            System.out.println("|-----------------------------------|");
+                            System.out.print("|  ");
+                        }
+                        else{
                             System.out.print("|  ");
                         }
                     } else if (j % 3 == 0) {

@@ -100,7 +100,7 @@ public class FileReader {
     }
 
     private void makeStatementList(int count) {
-        for (int i = 1; i < count - 110; i++) {
+        for (int i = 1; i < count - 109; i++) {
             if (((i + 110) % 10 != 0) && ((((i + 110) / 10) % 10) != 0)) {
                 statements.add(new Literal(i + 110));
             }

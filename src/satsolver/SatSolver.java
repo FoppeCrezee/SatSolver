@@ -18,8 +18,13 @@ public class SatSolver {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        Start start = new Start();
+    public static void main(String[] args) throws CloneNotSupportedException {
+        String DPH = args[0];
+        int heuristics = Integer.parseInt(DPH.substring(2, 3));
+        String fileName = args[1];
+        System.out.println(heuristics);
+        System.out.println(fileName);
+        Start start = new Start(heuristics, fileName);
         start.main();
 
     }
