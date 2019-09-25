@@ -15,10 +15,11 @@ import java.util.ArrayList;
  */
 public class FileReader {
 
-    String line = "";
-    ArrayList<Clause> list = new ArrayList();
-    ArrayList<Literal> statements = new ArrayList<Literal>();
-    String path;
+    private String line = "";
+    private ArrayList<Clause> list = new ArrayList();
+//    private ArrayList<Literal> statements = new ArrayList<Literal>();
+    private ArrayList<Literal> listOfLiterals = new ArrayList<>();
+    private String path;
     //int i = 0;
 
     public FileReader(String path) {
@@ -30,23 +31,27 @@ public class FileReader {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
             int count = fileInformation(br.readLine());
-            makeStatementList(count);
+//            makeStatementList(count);
             while ((line = br.readLine()) != null) {
                 String[] gegeven = line.split("0");
                 String test = gegeven[0];
+//                System.out.println(test);
                 Clause rule = new Clause(test);
                 if (!rule.checkTaut()) {
                     list.add(rule);
                 }
+                addLiterals(test);
             }
         } catch (Exception e) {
+            System.out.println(e);
         }
-
+        System.out.println("List size:  " + listOfLiterals.size());
         return list;
     }
 
     /**
      * Reads in the sudokufile and converts every given number to a clause
+     *
      * @param path is the path to the sudokufile
      * @param l is the index of the line which we want to read
      */
@@ -55,11 +60,11 @@ public class FileReader {
         try {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
-            int k = l+1;
-            for(int f = 0; f < l; f++){
+            int k = l + 1;
+            for (int f = 0; f < l; f++) {
                 line = br.readLine();
             }
-            
+
             while (((line = br.readLine()) != null) && l != k) {
                 String sudoku = line;
 
@@ -99,16 +104,43 @@ public class FileReader {
 
     }
 
-    private void makeStatementList(int count) {
-        for (int i = 1; i < count - 109; i++) {
-            if (((i + 110) % 10 != 0) && ((((i + 110) / 10) % 10) != 0)) {
-                statements.add(new Literal(i + 110));
+    private void addLiterals(String list) {
+        String lijn = "";
+        for (int i = 0; i < list.length(); i++) {
+            if (!list.substring(i, i + 1).equals(" ")) {
+                lijn = lijn + list.substring(i, i + 1);
+            } else {
+                int getal = Integer.parseInt(lijn);
+                if (getal < 0) {
+                    getal = getal * -1;
+                }
+                if (!inList(getal)) {
+                    listOfLiterals.add(new Literal(getal));
+                }
+                lijn = "";
             }
         }
     }
 
+    private boolean inList(int number) {
+        for (int i = 0; i < listOfLiterals.size(); i++) {
+            if (listOfLiterals.get(i).getName() == number) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+//    private void makeStatementList(int count) {
+//        for (int i = 1; i < count - 109; i++) {
+//            if (((i + 110) % 10 != 0) && ((((i + 110) / 10) % 10) != 0)) {
+//                statements.add(new Literal(i + 110));
+//            }
+//        }
+//    }
+
     public ArrayList<Literal> getStatements() {
-        return statements;
+        return listOfLiterals;
     }
 
 }

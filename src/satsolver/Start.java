@@ -37,19 +37,9 @@ public class Start {
     
     public void main() throws CloneNotSupportedException {
         clauses = new ArrayList<Clause>();
-
-//        First UI message
-//        JOptionPane.showMessageDialog(null, "Choose sudoku rules which includes the sudoku you want to solve");
-////        Lets you choose the file you want to read
-//        FileChooser chooser = new FileChooser();
-//        path = chooser.main();
-//        JOptionPane.showMessageDialog(null, "Now choose the file with all the sudokus");
-//        sudokuPath = chooser.main();
-//        JOptionPane.showMessageDialog(null, "Which line in the file do you want to solve?");
-//        int index = Integer.parseInt(JOptionPane.showInputDialog(null, "Which line in the file do you want to solve?"));
         path = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
-        sudokuPath = "C:\\Users\\foppe\\Desktop\\1000_sudokus.txt";
-        int index = 2;
+        sudokuPath = "C:\\Users\\foppe\\Desktop\\damnhard.sdk.txt";
+        int index = 1;
 
         //starts timer for reading the file
         int milis_startTimeReader = 0;
@@ -78,10 +68,8 @@ public class Start {
         milis_startTime = (int) System.currentTimeMillis();
 
         //Starts DP algorithm
-//        System.out.println(clauses.size());
         RulesReader rulesReader = new RulesReader();
         statementsFinal = rulesReader.dp(clauses, statementsFinal, startingClauses, startingLiterals);
-//        System.out.println("Na: " + clauses.size());
 
         //Ends dp timer
         int millis_endTime = 0;

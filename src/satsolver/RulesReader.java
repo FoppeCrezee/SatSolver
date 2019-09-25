@@ -65,6 +65,7 @@ public class RulesReader {
                     return null;
                 }
                 boolean random = r.nextBoolean();
+//                random = false;
 //                System.out.println("Choice");
                 if (random) {
                     listOfLiterals.get(next).setValue(1);
