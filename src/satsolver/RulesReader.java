@@ -18,7 +18,6 @@ public class RulesReader {
 
     private Random r = new Random();
 
-
     /**
      * Is the main algorithm which consist of checking if there is a unit
      * clause, a pure literal or making a split.
@@ -32,7 +31,9 @@ public class RulesReader {
      * @throws java.lang.CloneNotSupportedException
      */
     public ArrayList<Literal> dp(ArrayList<Clause> listOfClauses, ArrayList<Literal> listOfLiterals, ArrayList<Clause> startingList, ArrayList<Literal> startingStatements) throws CloneNotSupportedException {
-        //copy of list
+        System.out.println("Lijst is " + listOfClauses.size());
+
+//copy of list
         ArrayList<Clause> backupC = new ArrayList<>();
 
         Iterator<Clause> iterator = listOfClauses.iterator();
@@ -49,10 +50,10 @@ public class RulesReader {
 
 //        System.out.println("DP");
         if (listOfClauses.isEmpty()) {
-//            System.out.println("Done");
+            System.out.println("Done");
             return listOfLiterals;
         } else if (checkEmptyClause(listOfClauses)) {
-//            System.out.println("stop2");
+            System.out.println("stop2");
             return null;
         } else {
             checkUnitClause(listOfLiterals, listOfClauses);
@@ -61,23 +62,23 @@ public class RulesReader {
             if (!listOfClauses.isEmpty()) {
                 int next = getNextUnknownLiteral(listOfLiterals);
                 if (next == -1) {
-//                    System.out.println("exit");
+                    System.out.println("exit");
                     return null;
                 }
                 boolean random = r.nextBoolean();
-//                random = false;
+//                random = true;
 //                System.out.println("Choice");
                 if (random) {
                     listOfLiterals.get(next).setValue(1);
-//                    System.out.println(listOfLiterals.get(next).getName() + " = 1");
+                    System.out.println(listOfLiterals.get(next).getName() + " = 1");
                     removeClause(listOfLiterals.get(next).getName(), listOfClauses);
                 } else {
                     listOfLiterals.get(next).setValue(-1);
-//                    System.out.println(listOfLiterals.get(next).getName() + " = -1");
+                    System.out.println(listOfLiterals.get(next).getName() + " = -1");
                     removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
                 }
 
-//                System.out.println("Lijst is " + listOfClauses.size());
+                System.out.println("Lijst is " + listOfClauses.size());
                 listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
                 if (listOfLiterals == null) {
 
@@ -89,18 +90,18 @@ public class RulesReader {
 
                     if (!random) {
                         listOfLiterals.get(next).setValue(1);
-//                        System.out.println(listOfLiterals.get(next).getName() + " = 1");
+                        System.out.println(listOfLiterals.get(next).getName() + " = 1");
                         removeClause(listOfLiterals.get(next).getName(), listOfClauses);
                     } else {
                         listOfLiterals.get(next).setValue(-1);
-//                        System.out.println(listOfLiterals.get(next).getName() + " = -1");
+                        System.out.println(listOfLiterals.get(next).getName() + " = -1");
                         removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
                     }
 //                    System.out.println("Lijst is " + listOfClauses.size());
 
                     listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
                     if (listOfLiterals == null) {
-//                        System.out.println("double exit");
+                        System.out.println("double exit");
                         return null;
                     } else if (listOfLiterals != null) {
                         return listOfLiterals;
@@ -122,7 +123,7 @@ public class RulesReader {
 //        System.out.println("test");
         return listOfLiterals;
     }
-    
+
     /**
      * @return returns true if there is an empty clause in the list. Returns
      * false if no empty list has been found.
@@ -130,7 +131,7 @@ public class RulesReader {
     private boolean checkEmptyClause(ArrayList<Clause> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getRules().isEmpty()) {
-//                System.out.println("Empty!");
+//                System.out.println(list.get(i).getRules());
                 return true;
             }
         }

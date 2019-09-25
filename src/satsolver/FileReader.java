@@ -31,16 +31,17 @@ public class FileReader {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
             int count = fileInformation(br.readLine());
+            
 //            makeStatementList(count);
             while ((line = br.readLine()) != null) {
-                String[] gegeven = line.split("0");
+                String[] gegeven = line.split(" 0");
                 String test = gegeven[0];
 //                System.out.println(test);
-                Clause rule = new Clause(test);
+                Clause rule = new Clause(test + " ");
                 if (!rule.checkTaut()) {
                     list.add(rule);
                 }
-                addLiterals(test);
+                addLiterals(test + " ");
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -85,6 +86,73 @@ public class FileReader {
         } catch (Exception e) {
         }
         return sudokuClauses;
+    }
+
+    public ArrayList<Clause> SudokuReader16(String path, int l) {
+        ArrayList<Clause> sudokuClauses = new ArrayList<>();
+        try {
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new java.io.FileReader(file));
+            int k = l + 1;
+            for (int f = 0; f < l; f++) {
+                line = br.readLine();
+            }
+
+            while (((line = br.readLine()) != null) && l != k) {
+                String sudoku = line;
+                int r = 1;
+                int c = 1;
+
+                for (int i = 1; i < 257; i++) {
+                    String number = "";
+                    if (c == 17) {
+                        r++;
+                        c = 1;
+                    }
+
+                    if (!sudoku.substring(i - 1, i).equals(".")) {                 
+                        int v = hexToDec(sudoku.substring(i - 1, i));
+                        int encode = 289 * r + 17 * c + v;
+                        number = Integer.toString(encode);
+//                        number = number + sudoku.substring(i - 9, i - 8);
+                        Clause clause = new Clause(number + " ");
+                        sudokuClauses.add(clause);
+                    } else {
+                    }
+                    c++;
+                }
+                l++;
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return sudokuClauses;
+    }
+
+    private int hexToDec(String hex) {
+        try {
+            int number = Integer.parseInt(hex);
+            return number;
+        } catch (java.lang.NumberFormatException e) {
+            switch (hex) {
+                case "A":
+                    return 10;
+                case "B":
+                    return 11;
+                case "C":
+                    return 12;
+                case "D":
+                    return 13;
+                case "E":
+                    return 14;
+                case "F":
+                    return 15;
+                default:
+                    return 16;
+            }
+        }
+
     }
 
     private int fileInformation(String information) {
@@ -138,7 +206,6 @@ public class FileReader {
 //            }
 //        }
 //    }
-
     public ArrayList<Literal> getStatements() {
         return listOfLiterals;
     }
