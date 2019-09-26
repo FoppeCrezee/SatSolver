@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package satsolver;
+package Heuristics1;
 
 import java.util.ArrayList;
 
@@ -12,14 +12,14 @@ import java.util.ArrayList;
  *
  * @author foppe
  */
-public class Clause implements Cloneable {
+public class ClauseH1 implements Cloneable {
 
     private boolean isTrue = false;
     private ArrayList<Integer> statements = new ArrayList<Integer>();
 
     String lijn = "";
 
-    public Clause(String list) {
+    public ClauseH1(String list) {
         for (int i = 0; i < list.length(); i++) {
             if (!list.substring(i, i + 1).equals(" ")) {
                 lijn = lijn + list.substring(i, i + 1);
@@ -36,9 +36,9 @@ public class Clause implements Cloneable {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        Clause clone = null;
+        ClauseH1 clone = null;
         try {
-            clone = (Clause) super.clone();
+            clone = (ClauseH1) super.clone();
 
             //Copy new date object to cloned method
             clone.setRules((ArrayList<Integer>) this.getRules().clone());

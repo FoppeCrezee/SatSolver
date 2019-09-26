@@ -3,27 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package satsolver;
+package Heuristics1;
 
 /**
  * this is a literal
  *
  * @author foppe
  */
-public class Literal implements Cloneable {
+public class LiteralH1 implements Cloneable {
 
     private int name;
     private int value = 0;
 
-    public Literal(int name) {
+    public LiteralH1(int name) {
         this.name = name;
     }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        Literal clone = null;
+        LiteralH1 clone = null;
         try {
-            clone = (Literal) super.clone();
+            clone = (LiteralH1) super.clone();
 
             //Copy new date object to cloned method
 //            clone.setValue((int) this.getValue().clone());

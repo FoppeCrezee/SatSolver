@@ -5,6 +5,10 @@
  */
 package satsolver;
 
+import Heuristics1.FileReaderH1;
+import Heuristics1.LiteralH1;
+import Heuristics1.DPRandom;
+import Heuristics1.ClauseH1;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -15,16 +19,21 @@ import javax.swing.JOptionPane;
  */
 public class Start {
 
-    private ArrayList<Clause> clauses;
-    private ArrayList<Clause> startingClauses;
-    private ArrayList<Literal> statementsFinal;
-    private ArrayList<Literal> startingLiterals;
+    private ArrayList<ClauseH1> clauses;
+    private ArrayList<ClauseH1> startingClauses;
+    private ArrayList<LiteralH1> statementsFinal;
+    private ArrayList<LiteralH1> startingLiterals;
     //all clauses from reading the sudoku
-    private ArrayList<Clause> sudokuClauses;
+    private ArrayList<ClauseH1> sudokuClauses;
 
     private int time = 0;
     private int timeReader = 0;
-    
+
+    //index is the line of the list with sudokus
+    private int index = 9;
+    //dif is if what kind of sudoku you want. 4 = 4*4, 9 = 9*9 & 16 = 16*16
+    private int dif = 16;
+
     private String path4;
     private String path9;
     private String path16;
@@ -41,42 +50,50 @@ public class Start {
     }
 
     public void main() throws CloneNotSupportedException {
-        clauses = new ArrayList<Clause>();
+        clauses = new ArrayList<ClauseH1>();
         path4 = "C:\\Users\\foppe\\Desktop\\sudoku-rules-4x4.txt";
         path9 = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
         path16 = "C:\\Users\\foppe\\Desktop\\sudoku-rules-16x16.txt";
         sudokuPath16 = "C:\\Users\\foppe\\Desktop\\16x16.txt";
         sudokuPath9 = "C:\\Users\\foppe\\Desktop\\Dmnhard.sdk.txt";
         sudokuPath4 = "C:\\Users\\foppe\\Desktop\\4x4.txt";
-        int index = 9;
 
+        if (heuristics == 1) {
+            H1();
+        }
+
+    }
+
+    private void H1() throws CloneNotSupportedException {
         //starts timer for reading the file
         int milis_startTimeReader = 0;
         milis_startTimeReader = (int) System.currentTimeMillis();
 
-        //Reads all the file
-        //First one is for 9*9, second one for 16*16
-        FileReader reader = new FileReader(path4);
-//        FileReader reader = new FileReader(path9);
-//        FileReader reader = new FileReader(path16);
-
-        statementsFinal = reader.getStatements();
-        clauses = reader.main();
-
-        //First one is for 9*9, second one for 16*16
-        FileReader readerStart = new FileReader(path4);
-//        FileReader readerStart = new FileReader(path9);
-//        FileReader readerStart = new FileReader(path16);
-
-        startingLiterals = readerStart.getStatements();
-        startingClauses = readerStart.main();
-
-        //merges all new clauses from the given numbers in the sudoku
-        //First one is for 9*9, second one for 16*16
-        sudokuClauses = reader.SudokuReader4(sudokuPath4, index);
-//        sudokuClauses = reader.SudokuReader9(sudokuPath9, index);
-//        sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
-        
+        if (dif == 4) {
+            FileReaderH1 reader = new FileReaderH1(path4);
+            statementsFinal = reader.getStatements();
+            clauses = reader.main();
+            FileReaderH1 readerStart = new FileReaderH1(path4);
+            startingLiterals = readerStart.getStatements();
+            startingClauses = readerStart.main();
+            sudokuClauses = reader.SudokuReader4(sudokuPath4, index);
+        } else if (dif == 9) {
+            FileReaderH1 reader = new FileReaderH1(path9);
+            statementsFinal = reader.getStatements();
+            clauses = reader.main();
+            FileReaderH1 readerStart = new FileReaderH1(path9);
+            startingLiterals = readerStart.getStatements();
+            startingClauses = readerStart.main();
+            sudokuClauses = reader.SudokuReader9(sudokuPath9, index);
+        } else {
+            FileReaderH1 reader = new FileReaderH1(path16);
+            statementsFinal = reader.getStatements();
+            clauses = reader.main();
+            FileReaderH1 readerStart = new FileReaderH1(path16);
+            startingLiterals = readerStart.getStatements();
+            startingClauses = readerStart.main();
+            sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
+        }
 
         clauses.addAll(sudokuClauses);
         startingClauses.addAll(sudokuClauses);
@@ -91,7 +108,7 @@ public class Start {
         milis_startTime = (int) System.currentTimeMillis();
 
         //Starts DP algorithm
-        RulesReader rulesReader = new RulesReader();
+        DPRandom rulesReader = new DPRandom();
         statementsFinal = rulesReader.dp(clauses, statementsFinal, startingClauses, startingLiterals);
 
         //Ends dp timer
@@ -100,152 +117,16 @@ public class Start {
         time = millis_endTime - milis_startTime;
 
         //prints the result
+        Printer printer = new Printer(statementsFinal, timeReader, time);
+        if (dif == 4) {
+            printer.printStatements4();
+        } else if (dif == 9) {
+            printer.printStatements9();
+        } else {
+            printer.printStatements16();
+        }
+
         rulesReader.printAmount();
-//        printStatements9();
-        printStatements4();
-//        printStatements16();
     }
 
-    private void printStatements9() {
-
-        System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
-        System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
-        System.out.println("|-----------------------------------|");
-        System.out.print("|  ");
-        int j = 0;
-        int k = 0;
-        if (statementsFinal != null) {
-            for (int i = 0; i < statementsFinal.size(); i++) {
-                if (statementsFinal.get(i).getValue() == 1) {
-                    System.out.print((statementsFinal.get(i).getName() % 10) + "  ");
-//                System.out.println(statements.get(i).getName());
-                    j++;
-                    if (j % 9 == 0) {
-                        System.out.println("|");
-
-                        k++;
-                        if (k % 3 == 0) {
-                            System.out.println("|-----------------------------------|");
-                            System.out.print("|  ");
-                        } else {
-                            System.out.print("|  ");
-                        }
-                    } else if (j % 3 == 0) {
-                        System.out.print("|  ");
-                    }
-
-                }
-
-            }
-
-            System.out.println("No value:");
-            for (int i = 0; i < statementsFinal.size(); i++) {
-
-                if (statementsFinal.get(i).getValue() == 0) {
-                    System.out.println(statementsFinal.get(i).getName());
-                }
-            }
-        } else {
-            System.out.println("Not solvable");
-        }
-
-    }
-    
-    private void printStatements4() {
-
-        System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
-        System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
-        System.out.println("|-----------------|");
-        System.out.print("|  ");
-        int j = 0;
-        int k = 0;
-        if (statementsFinal != null) {
-            for (int i = 0; i < statementsFinal.size(); i++) {
-                if (statementsFinal.get(i).getValue() == 1) {
-                    System.out.print((statementsFinal.get(i).getName() % 10) + "  ");
-//                System.out.println(statements.get(i).getName());
-                    j++;
-                    if (j % 4 == 0) {
-                        System.out.println("|");
-
-                        k++;
-                        if (k % 2 == 0) {
-                            System.out.println("|-----------------|");
-                            System.out.print("|  ");
-                        } else {
-                            System.out.print("|  ");
-                        }
-                    } else if (j % 2 == 0) {
-                        System.out.print("|  ");
-                    }
-
-                }
-
-            }
-
-            System.out.println("No value:");
-            for (int i = 0; i < statementsFinal.size(); i++) {
-
-                if (statementsFinal.get(i).getValue() == 0) {
-                    System.out.println(statementsFinal.get(i).getName());
-                }
-            }
-        } else {
-            System.out.println("Not solvable");
-        }
-
-    }
-
-    private void printStatements16() {
-
-        System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
-        System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
-        System.out.println("|-----------------------------------------------------------|");
-        System.out.print("|  ");
-        int j = 0;
-        int k = 0;
-        if (statementsFinal != null) {
-            for (int i = 0; i < statementsFinal.size(); i++) {
-                if (statementsFinal.get(i).getValue() == 1) {
-                    int number = statementsFinal.get(i).getName();
-                    int r = number / 289;
-                    int c = (number - (289 * r)) / 17;
-                    int v = (number - (289 * r) - (17 * c));
-                    if (v > 9) {
-                        System.out.print(v + " ");
-                    } else {
-                        System.out.print(" " + v + " ");
-                    }
-//                System.out.println(statements.get(i).getName());
-                    j++;
-                    if (j % 16 == 0) {
-                        System.out.println("|");
-
-                        k++;
-                        if (k % 4 == 0) {
-                            System.out.println("|-----------------------------------------------------------|");
-                            System.out.print("|  ");
-                        } else {
-                            System.out.print("|  ");
-                        }
-                    } else if (j % 4 == 0) {
-                        System.out.print("|  ");
-                    }
-
-                }
-
-            }
-
-            System.out.println("No value:");
-            for (int i = 0; i < statementsFinal.size(); i++) {
-
-                if (statementsFinal.get(i).getValue() == 0) {
-                    System.out.println(statementsFinal.get(i).getName());
-                }
-            }
-        } else {
-            System.out.println("Not solvable");
-        }
-
-    }
 }

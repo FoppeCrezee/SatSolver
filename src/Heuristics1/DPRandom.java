@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package satsolver;
+package Heuristics1;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,7 +14,7 @@ import java.util.Random;
  *
  * @author foppe
  */
-public class RulesReader {
+public class DPRandom {
 
     private Random r = new Random();
     private int choicesAmount = 0;
@@ -32,7 +32,7 @@ public class RulesReader {
      * @return This returns an ArrayList with all the statements
      * @throws java.lang.CloneNotSupportedException
      */
-    public ArrayList<Literal> dp(ArrayList<Clause> listOfClauses, ArrayList<Literal> listOfLiterals, ArrayList<Clause> startingList, ArrayList<Literal> startingStatements) throws CloneNotSupportedException {
+    public ArrayList<LiteralH1> dp(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals, ArrayList<ClauseH1> startingList, ArrayList<LiteralH1> startingStatements) throws CloneNotSupportedException {
 //        System.out.println("Lijst is " + listOfClauses.size());
 
         if (listOfClauses.isEmpty()) {
@@ -44,18 +44,18 @@ public class RulesReader {
         }
 
 //copy of list
-        ArrayList<Clause> backupC = new ArrayList<>();
+        ArrayList<ClauseH1> backupC = new ArrayList<>();
 
-        Iterator<Clause> iterator = listOfClauses.iterator();
+        Iterator<ClauseH1> iterator = listOfClauses.iterator();
         while (iterator.hasNext()) {
-            backupC.add((Clause) iterator.next().clone());
+            backupC.add((ClauseH1) iterator.next().clone());
         }
         //copy of list
-        ArrayList<Literal> backupL = new ArrayList<Literal>();
+        ArrayList<LiteralH1> backupL = new ArrayList<LiteralH1>();
 
-        Iterator<Literal> iterator2 = listOfLiterals.iterator();
+        Iterator<LiteralH1> iterator2 = listOfLiterals.iterator();
         while (iterator2.hasNext()) {
-            backupL.add((Literal) iterator2.next().clone());
+            backupL.add((LiteralH1) iterator2.next().clone());
         }
 
 //        System.out.println("DP");
@@ -90,7 +90,7 @@ public class RulesReader {
             }
 
 //            System.out.println("Lijst is " + listOfClauses.size());
-            listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
+            listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals), new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
             if (listOfLiterals == null) {
                 wrongChoices++;
                 if (listOfClauses.equals(backupC)) {
@@ -110,7 +110,7 @@ public class RulesReader {
                 }
 //                    System.out.println("Lijst is " + listOfClauses.size());
 
-                listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
+                listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals), new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
                 if (listOfLiterals == null) {
 //                    System.out.println("double exit");
                     return null;
@@ -139,7 +139,7 @@ public class RulesReader {
      * @return returns true if there is an empty clause in the list. Returns
      * false if no empty list has been found.
      */
-    private boolean checkEmptyClause(ArrayList<Clause> list) {
+    private boolean checkEmptyClause(ArrayList<ClauseH1> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getRules().isEmpty()) {
 //                System.out.println(list.get(i).getRules());
@@ -154,7 +154,7 @@ public class RulesReader {
      * @return Returns an ArrayList with all the statements after checking if
      * there is a unit clause
      */
-    private ArrayList<Literal> checkUnitClause(ArrayList<Literal> list, ArrayList<Clause> clauses) {
+    private ArrayList<LiteralH1> checkUnitClause(ArrayList<LiteralH1> list, ArrayList<ClauseH1> clauses) {
         int variable = 0;
 
         for (int i = 0; i < clauses.size(); i++) {
@@ -191,7 +191,7 @@ public class RulesReader {
         }
     }
 
-    private ArrayList<Literal> checkPureLiteral(ArrayList<Clause> listOfClauses, ArrayList<Literal> listOfLiterals) {
+    private ArrayList<LiteralH1> checkPureLiteral(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals) {
         for (int i = 0; i < listOfLiterals.size(); i++) {
             if (listOfLiterals.get(i).getValue() == 0) {
                 if (checkNumber(listOfLiterals.get(i).getName(), listOfClauses) == 1) {
@@ -209,7 +209,7 @@ public class RulesReader {
         return null;
     }
 
-    private int getNextUnknownLiteral(ArrayList<Literal> listOfLiterals) {
+    private int getNextUnknownLiteral(ArrayList<LiteralH1> listOfLiterals) {
         try {
             for (int i = 0; i < listOfLiterals.size(); i++) {
                 if (listOfLiterals.get(i).getValue() == 0) {
@@ -223,7 +223,7 @@ public class RulesReader {
         return -1;
     }
 
-    private int checkNumber(int number, ArrayList<Clause> listOfCLauses) {
+    private int checkNumber(int number, ArrayList<ClauseH1> listOfCLauses) {
         int positive = 0;
         int negative = 0;
         for (int i = 0; i < listOfCLauses.size(); i++) {
@@ -255,7 +255,7 @@ public class RulesReader {
      *
      * @param number is the literal which we want to remove.
      */
-    private void removeClause(int number, ArrayList<Clause> clauses) {
+    private void removeClause(int number, ArrayList<ClauseH1> clauses) {
 //         System.out.println("verwijder: " + number);
 
         if (number > 0) {

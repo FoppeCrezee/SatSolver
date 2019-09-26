@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package satsolver;
+package Heuristics1;
 
+import Heuristics1.LiteralH1;
+import Heuristics1.ClauseH1;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -13,20 +15,20 @@ import java.util.ArrayList;
  *
  * @author foppe
  */
-public class FileReader {
+public class FileReaderH1 {
 
     private String line = "";
-    private ArrayList<Clause> list = new ArrayList();
+    private ArrayList<ClauseH1> list = new ArrayList();
 //    private ArrayList<Literal> statements = new ArrayList<Literal>();
-    private ArrayList<Literal> listOfLiterals = new ArrayList<>();
+    private ArrayList<LiteralH1> listOfLiterals = new ArrayList<>();
     private String path;
     //int i = 0;
 
-    public FileReader(String path) {
+    public FileReaderH1(String path) {
         this.path = path;
     }
 
-    public ArrayList<Clause> main() {
+    public ArrayList<ClauseH1> main() {
         try {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
@@ -37,7 +39,7 @@ public class FileReader {
                 String[] gegeven = line.split(" 0");
                 String test = gegeven[0];
 //                System.out.println(test);
-                Clause rule = new Clause(test + " ");
+                ClauseH1 rule = new ClauseH1(test + " ");
                 if (!rule.checkTaut()) {
                     list.add(rule);
                 }
@@ -56,8 +58,8 @@ public class FileReader {
      * @param path is the path to the sudokufile
      * @param l is the index of the line which we want to read
      */
-    public ArrayList<Clause> SudokuReader9(String path, int l) {
-        ArrayList<Clause> sudokuClauses = new ArrayList<>();
+    public ArrayList<ClauseH1> SudokuReader9(String path, int l) {
+        ArrayList<ClauseH1> sudokuClauses = new ArrayList<>();
         try {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
@@ -75,7 +77,7 @@ public class FileReader {
                     number = number + ((i % 9) + 1);
                     if (!sudoku.substring(i - 9, i - 8).equals(".")) {
                         number = number + sudoku.substring(i - 9, i - 8);
-                        Clause clause = new Clause(number + " ");
+                        ClauseH1 clause = new ClauseH1(number + " ");
                         sudokuClauses.add(clause);
                     } else {
                     }
@@ -88,8 +90,8 @@ public class FileReader {
         return sudokuClauses;
     }
     
-        public ArrayList<Clause> SudokuReader4(String path, int l) {
-        ArrayList<Clause> sudokuClauses = new ArrayList<>();
+        public ArrayList<ClauseH1> SudokuReader4(String path, int l) {
+        ArrayList<ClauseH1> sudokuClauses = new ArrayList<>();
         try {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
@@ -107,7 +109,7 @@ public class FileReader {
                     number = number + ((i % 4) + 1);
                     if (!sudoku.substring(i - 4, i - 3).equals(".")) {
                         number = number + sudoku.substring(i - 4, i - 3);
-                        Clause clause = new Clause(number + " ");
+                        ClauseH1 clause = new ClauseH1(number + " ");
                         sudokuClauses.add(clause);
                     } else {
                     }
@@ -122,8 +124,8 @@ public class FileReader {
     
     
 
-    public ArrayList<Clause> SudokuReader16(String path, int l) {
-        ArrayList<Clause> sudokuClauses = new ArrayList<>();
+    public ArrayList<ClauseH1> SudokuReader16(String path, int l) {
+        ArrayList<ClauseH1> sudokuClauses = new ArrayList<>();
         try {
             File file = new File(path);
             BufferedReader br = new BufferedReader(new java.io.FileReader(file));
@@ -149,7 +151,7 @@ public class FileReader {
                         int encode = 289 * r + 17 * c + v;
                         number = Integer.toString(encode);
 //                        number = number + sudoku.substring(i - 9, i - 8);
-                        Clause clause = new Clause(number + " ");
+                        ClauseH1 clause = new ClauseH1(number + " ");
                         sudokuClauses.add(clause);
                     } else {
                     }
@@ -217,7 +219,7 @@ public class FileReader {
                     getal = getal * -1;
                 }
                 if (!inList(getal)) {
-                    listOfLiterals.add(new Literal(getal));
+                    listOfLiterals.add(new LiteralH1(getal));
                 }
                 lijn = "";
             }
@@ -236,11 +238,11 @@ public class FileReader {
 //    private void makeStatementList(int count) {
 //        for (int i = 1; i < count - 109; i++) {
 //            if (((i + 110) % 10 != 0) && ((((i + 110) / 10) % 10) != 0)) {
-//                statements.add(new Literal(i + 110));
+//                statements.add(new LiteralH1(i + 110));
 //            }
 //        }
 //    }
-    public ArrayList<Literal> getStatements() {
+    public ArrayList<LiteralH1> getStatements() {
         return listOfLiterals;
     }
 
