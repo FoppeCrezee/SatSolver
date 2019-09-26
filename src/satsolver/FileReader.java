@@ -56,7 +56,7 @@ public class FileReader {
      * @param path is the path to the sudokufile
      * @param l is the index of the line which we want to read
      */
-    public ArrayList<Clause> SudokuReader(String path, int l) {
+    public ArrayList<Clause> SudokuReader9(String path, int l) {
         ArrayList<Clause> sudokuClauses = new ArrayList<>();
         try {
             File file = new File(path);
@@ -87,6 +87,40 @@ public class FileReader {
         }
         return sudokuClauses;
     }
+    
+        public ArrayList<Clause> SudokuReader4(String path, int l) {
+        ArrayList<Clause> sudokuClauses = new ArrayList<>();
+        try {
+            File file = new File(path);
+            BufferedReader br = new BufferedReader(new java.io.FileReader(file));
+            int k = l + 1;
+            for (int f = 0; f < l; f++) {
+                line = br.readLine();
+            }
+
+            while (((line = br.readLine()) != null) && l != k) {
+                String sudoku = line;
+
+                for (int i = 4; i < 17; i++) {
+                    String number = "";
+                    number = number + i / 4;
+                    number = number + ((i % 4) + 1);
+                    if (!sudoku.substring(i - 4, i - 3).equals(".")) {
+                        number = number + sudoku.substring(i - 4, i - 3);
+                        Clause clause = new Clause(number + " ");
+                        sudokuClauses.add(clause);
+                    } else {
+                    }
+                }
+                l++;
+            }
+
+        } catch (Exception e) {
+        }
+        return sudokuClauses;
+    }
+    
+    
 
     public ArrayList<Clause> SudokuReader16(String path, int l) {
         ArrayList<Clause> sudokuClauses = new ArrayList<>();

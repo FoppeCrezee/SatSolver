@@ -24,9 +24,12 @@ public class Start {
 
     private int time = 0;
     private int timeReader = 0;
-    private String path;
+    
+    private String path4;
+    private String path9;
     private String path16;
-    private String sudokuPath;
+    private String sudokuPath4;
+    private String sudokuPath9;
     private String sudokuPath16;
 
     private int heuristics;
@@ -39,29 +42,42 @@ public class Start {
 
     public void main() throws CloneNotSupportedException {
         clauses = new ArrayList<Clause>();
-        path = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
+        path4 = "C:\\Users\\foppe\\Desktop\\sudoku-rules-4x4.txt";
+        path9 = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
         path16 = "C:\\Users\\foppe\\Desktop\\sudoku-rules-16x16.txt";
         sudokuPath16 = "C:\\Users\\foppe\\Desktop\\16x16.txt";
-        sudokuPath = "C:\\Users\\foppe\\Desktop\\damnhard.sdk.txt";
-        int index = 0;
+        sudokuPath9 = "C:\\Users\\foppe\\Desktop\\Dmnhard.sdk.txt";
+        sudokuPath4 = "C:\\Users\\foppe\\Desktop\\4x4.txt";
+        int index = 9;
 
         //starts timer for reading the file
         int milis_startTimeReader = 0;
         milis_startTimeReader = (int) System.currentTimeMillis();
 
         //Reads all the file
-//        FileReader reader = new FileReader(path);
-        FileReader reader = new FileReader(path16);
+        //First one is for 9*9, second one for 16*16
+        FileReader reader = new FileReader(path4);
+//        FileReader reader = new FileReader(path9);
+//        FileReader reader = new FileReader(path16);
+
         statementsFinal = reader.getStatements();
         clauses = reader.main();
-//        FileReader readerStart = new FileReader(path);
-        FileReader readerStart = new FileReader(path16);
+
+        //First one is for 9*9, second one for 16*16
+        FileReader readerStart = new FileReader(path4);
+//        FileReader readerStart = new FileReader(path9);
+//        FileReader readerStart = new FileReader(path16);
+
         startingLiterals = readerStart.getStatements();
         startingClauses = readerStart.main();
 
         //merges all new clauses from the given numbers in the sudoku
-        sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
-//        sudokuClauses = reader.SudokuReader(sudokuPath, index);
+        //First one is for 9*9, second one for 16*16
+        sudokuClauses = reader.SudokuReader4(sudokuPath4, index);
+//        sudokuClauses = reader.SudokuReader9(sudokuPath9, index);
+//        sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
+        
+
         clauses.addAll(sudokuClauses);
         startingClauses.addAll(sudokuClauses);
 
@@ -84,10 +100,13 @@ public class Start {
         time = millis_endTime - milis_startTime;
 
         //prints the result
-        printStatements16();
+        rulesReader.printAmount();
+//        printStatements9();
+        printStatements4();
+//        printStatements16();
     }
 
-    private void printStatements() {
+    private void printStatements9() {
 
         System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
         System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
@@ -112,6 +131,51 @@ public class Start {
                             System.out.print("|  ");
                         }
                     } else if (j % 3 == 0) {
+                        System.out.print("|  ");
+                    }
+
+                }
+
+            }
+
+            System.out.println("No value:");
+            for (int i = 0; i < statementsFinal.size(); i++) {
+
+                if (statementsFinal.get(i).getValue() == 0) {
+                    System.out.println(statementsFinal.get(i).getName());
+                }
+            }
+        } else {
+            System.out.println("Not solvable");
+        }
+
+    }
+    
+    private void printStatements4() {
+
+        System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
+        System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
+        System.out.println("|-----------------|");
+        System.out.print("|  ");
+        int j = 0;
+        int k = 0;
+        if (statementsFinal != null) {
+            for (int i = 0; i < statementsFinal.size(); i++) {
+                if (statementsFinal.get(i).getValue() == 1) {
+                    System.out.print((statementsFinal.get(i).getName() % 10) + "  ");
+//                System.out.println(statements.get(i).getName());
+                    j++;
+                    if (j % 4 == 0) {
+                        System.out.println("|");
+
+                        k++;
+                        if (k % 2 == 0) {
+                            System.out.println("|-----------------|");
+                            System.out.print("|  ");
+                        } else {
+                            System.out.print("|  ");
+                        }
+                    } else if (j % 2 == 0) {
                         System.out.print("|  ");
                     }
 

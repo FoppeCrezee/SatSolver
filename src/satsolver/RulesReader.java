@@ -17,6 +17,8 @@ import java.util.Random;
 public class RulesReader {
 
     private Random r = new Random();
+    private int choicesAmount = 0;
+    private int wrongChoices = 0;
 
     /**
      * Is the main algorithm which consist of checking if there is a unit
@@ -31,7 +33,15 @@ public class RulesReader {
      * @throws java.lang.CloneNotSupportedException
      */
     public ArrayList<Literal> dp(ArrayList<Clause> listOfClauses, ArrayList<Literal> listOfLiterals, ArrayList<Clause> startingList, ArrayList<Literal> startingStatements) throws CloneNotSupportedException {
-        System.out.println("Lijst is " + listOfClauses.size());
+//        System.out.println("Lijst is " + listOfClauses.size());
+
+        if (listOfClauses.isEmpty()) {
+//            System.out.println("Done");
+            return listOfLiterals;
+        } else if (checkEmptyClause(listOfClauses)) {
+//            System.out.println("stop2");
+            return null;
+        }
 
 //copy of list
         ArrayList<Clause> backupC = new ArrayList<>();
@@ -49,77 +59,78 @@ public class RulesReader {
         }
 
 //        System.out.println("DP");
-        if (listOfClauses.isEmpty()) {
-            System.out.println("Done");
-            return listOfLiterals;
-        } else if (checkEmptyClause(listOfClauses)) {
-            System.out.println("stop2");
-            return null;
-        } else {
-            checkUnitClause(listOfLiterals, listOfClauses);
+//        if (listOfClauses.isEmpty()) {
+//            System.out.println("Done");
+//            return listOfLiterals;
+//        } else if (checkEmptyClause(listOfClauses)) {
+//            System.out.println("stop2");
+//            return null;
+//        } else {
+        checkUnitClause(listOfLiterals, listOfClauses);
 //            Don't know if we need this very timeconsuming
 //            checkPureLiteral(listOfClauses, listOfLiterals);
-            if (!listOfClauses.isEmpty()) {
-                int next = getNextUnknownLiteral(listOfLiterals);
-                if (next == -1) {
-                    System.out.println("exit");
-                    return null;
-                }
-                boolean random = r.nextBoolean();
-//                random = true;
+        if (!listOfClauses.isEmpty()) {
+            int next = getNextUnknownLiteral(listOfLiterals);
+            if (next == -1) {
+//                System.out.println("exit");
+                return null;
+            }
+            choicesAmount++;
+            boolean random = r.nextBoolean();
+//            random = false;
 //                System.out.println("Choice");
-                if (random) {
+            if (random) {
+                listOfLiterals.get(next).setValue(1);
+//                System.out.println(listOfLiterals.get(next).getName() + " = 1");
+                removeClause(listOfLiterals.get(next).getName(), listOfClauses);
+            } else {
+                listOfLiterals.get(next).setValue(-1);
+//                System.out.println(listOfLiterals.get(next).getName() + " = -1");
+                removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
+            }
+
+//            System.out.println("Lijst is " + listOfClauses.size());
+            listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
+            if (listOfLiterals == null) {
+                wrongChoices++;
+                if (listOfClauses.equals(backupC)) {
+//                        System.out.println("Not Good");
+                }
+                listOfClauses = new ArrayList(backupC);
+                listOfLiterals = new ArrayList(backupL);
+
+                if (!random) {
                     listOfLiterals.get(next).setValue(1);
-                    System.out.println(listOfLiterals.get(next).getName() + " = 1");
+//                    System.out.println(listOfLiterals.get(next).getName() + " = 1");
                     removeClause(listOfLiterals.get(next).getName(), listOfClauses);
                 } else {
                     listOfLiterals.get(next).setValue(-1);
-                    System.out.println(listOfLiterals.get(next).getName() + " = -1");
+//                    System.out.println(listOfLiterals.get(next).getName() + " = -1");
                     removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
                 }
-
-                System.out.println("Lijst is " + listOfClauses.size());
-                listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
-                if (listOfLiterals == null) {
-
-                    if (listOfClauses.equals(backupC)) {
-//                        System.out.println("Not Good");
-                    }
-                    listOfClauses = new ArrayList(backupC);
-                    listOfLiterals = new ArrayList(backupL);
-
-                    if (!random) {
-                        listOfLiterals.get(next).setValue(1);
-                        System.out.println(listOfLiterals.get(next).getName() + " = 1");
-                        removeClause(listOfLiterals.get(next).getName(), listOfClauses);
-                    } else {
-                        listOfLiterals.get(next).setValue(-1);
-                        System.out.println(listOfLiterals.get(next).getName() + " = -1");
-                        removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
-                    }
 //                    System.out.println("Lijst is " + listOfClauses.size());
 
-                    listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
-                    if (listOfLiterals == null) {
-                        System.out.println("double exit");
-                        return null;
-                    } else if (listOfLiterals != null) {
-                        return listOfLiterals;
-                    }
-
+                listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals), new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
+                if (listOfLiterals == null) {
+//                    System.out.println("double exit");
+                    return null;
                 } else if (listOfLiterals != null) {
                     return listOfLiterals;
+                }
 
-                }
-                if (listOfClauses.isEmpty()) {
+            } else if (listOfLiterals != null) {
+                return listOfLiterals;
+
+            }
+            if (listOfClauses.isEmpty()) {
 //                    System.out.println("Done");
-                    return listOfLiterals;
-                } else if (checkEmptyClause(listOfClauses)) {
+                return listOfLiterals;
+            } else if (checkEmptyClause(listOfClauses)) {
 //                    System.out.println("stop2");
-                    return null;
-                }
+                return null;
             }
         }
+//        }
 //        System.out.println("test");
         return listOfLiterals;
     }
@@ -230,6 +241,11 @@ public class RulesReader {
         } else {
             return 0;
         }
+    }
+    
+    public void printAmount(){
+        System.out.println("Amount of Choices: " + choicesAmount);
+        System.out.println("Wrong coices: " + wrongChoices);
     }
 
     /**
