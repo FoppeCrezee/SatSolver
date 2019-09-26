@@ -20,9 +20,7 @@ import javax.swing.JOptionPane;
 public class Start {
 
     private ArrayList<ClauseH1> clauses;
-    private ArrayList<ClauseH1> startingClauses;
     private ArrayList<LiteralH1> statementsFinal;
-    private ArrayList<LiteralH1> startingLiterals;
     //all clauses from reading the sudoku
     private ArrayList<ClauseH1> sudokuClauses;
 
@@ -30,9 +28,9 @@ public class Start {
     private int timeReader = 0;
 
     //index is the line of the list with sudokus
-    private int index = 9;
+    private int index = 8;
     //dif is if what kind of sudoku you want. 4 = 4*4, 9 = 9*9 & 16 = 16*16
-    private int dif = 9;
+    private int dif = 4;
 
     private String path4;
     private String path9;
@@ -73,30 +71,20 @@ public class Start {
             FileReaderH1 reader = new FileReaderH1(path4);
             statementsFinal = reader.getStatements();
             clauses = reader.main();
-            FileReaderH1 readerStart = new FileReaderH1(path4);
-            startingLiterals = readerStart.getStatements();
-            startingClauses = readerStart.main();
             sudokuClauses = reader.SudokuReader4(sudokuPath4, index);
         } else if (dif == 9) {
             FileReaderH1 reader = new FileReaderH1(path9);
             statementsFinal = reader.getStatements();
             clauses = reader.main();
-            FileReaderH1 readerStart = new FileReaderH1(path9);
-            startingLiterals = readerStart.getStatements();
-            startingClauses = readerStart.main();
             sudokuClauses = reader.SudokuReader9(sudokuPath9, index);
         } else {
             FileReaderH1 reader = new FileReaderH1(path16);
             statementsFinal = reader.getStatements();
             clauses = reader.main();
-            FileReaderH1 readerStart = new FileReaderH1(path16);
-            startingLiterals = readerStart.getStatements();
-            startingClauses = readerStart.main();
             sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
         }
 
         clauses.addAll(sudokuClauses);
-        startingClauses.addAll(sudokuClauses);
 
         //Ends the timer for reading the file
         int millis_endTimeReader = 0;
@@ -109,7 +97,7 @@ public class Start {
 
         //Starts DP algorithm
         DPRandom rulesReader = new DPRandom();
-        statementsFinal = rulesReader.dp(clauses, statementsFinal, startingClauses, startingLiterals);
+        statementsFinal = rulesReader.dp(clauses, statementsFinal);
 
         //Ends dp timer
         int millis_endTime = 0;

@@ -27,11 +27,8 @@ public class ClauseH1 implements Cloneable {
                 int getal = Integer.parseInt(lijn);
                 statements.add(getal);
                 lijn = "";
-                //checkTaut(getal);
             }
         }
-        //printRule();
-
     }
 
     @Override
@@ -62,7 +59,6 @@ public class ClauseH1 implements Cloneable {
         }
         return false;
     }
-    //TODO if statement is negative and positive in same statement delete
 
     private void setRules(ArrayList<Integer> list){
         statements = list;
@@ -90,7 +86,6 @@ public class ClauseH1 implements Cloneable {
         for (int i = 0; i < statements.size(); i++) {
             if (statements.get(i) == number) {
                 statements.remove(i);
-                //TODO wat als leeg
             }
         }
     }
@@ -98,7 +93,6 @@ public class ClauseH1 implements Cloneable {
     public boolean checkRuleNegative(int number) {
         for (int i = 0; i < statements.size(); i++) {
             if (statements.get(i) == number * -1) {
-//                System.out.println("Found him");
                 return true;
             }
         }

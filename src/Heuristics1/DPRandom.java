@@ -26,13 +26,11 @@ public class DPRandom {
      *
      * @param listOfClauses
      * @param listOfLiterals
-     * @param startingList
-     * @param startingStatements
      *
      * @return This returns an ArrayList with all the statements
      * @throws java.lang.CloneNotSupportedException
      */
-    public ArrayList<LiteralH1> dp(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals, ArrayList<ClauseH1> startingList, ArrayList<LiteralH1> startingStatements) throws CloneNotSupportedException {
+    public ArrayList<LiteralH1> dp(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals) throws CloneNotSupportedException {
 
         if (listOfClauses.isEmpty()) {
             return listOfLiterals;
@@ -73,7 +71,7 @@ public class DPRandom {
                 removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
             }
             
-            listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals), new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
+            listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
             if (listOfLiterals == null) {
                 wrongChoices++;
                 if (listOfClauses.equals(backupC)) {
@@ -89,7 +87,7 @@ public class DPRandom {
                     removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
                 }
 
-                listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals), new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
+                listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
                 if (listOfLiterals == null) {
                     return null;
                 } else if (listOfLiterals != null) {
@@ -160,6 +158,9 @@ public class DPRandom {
         }
     }
 
+    /**
+     * @deprecated 
+     */
     private ArrayList<LiteralH1> checkPureLiteral(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals) {
         for (int i = 0; i < listOfLiterals.size(); i++) {
             if (listOfLiterals.get(i).getValue() == 0) {
@@ -176,6 +177,11 @@ public class DPRandom {
         return null;
     }
 
+    /**
+     * Gives you the next Literal in the list which has no value
+     * @param listOfLiterals is the list with all the literals
+     * @return the index of the literal in the array. returns -1 if no unknown literal is found
+     */
     private int getNextUnknownLiteral(ArrayList<LiteralH1> listOfLiterals) {
         try {
             for (int i = 0; i < listOfLiterals.size(); i++) {
@@ -210,6 +216,9 @@ public class DPRandom {
         }
     }
     
+    /**
+     * prints the amount of choices made in the algorithm
+     */
     public void printAmount(){
         System.out.println("Amount of Choices: " + choicesAmount);
         System.out.println("Wrong coices: " + wrongChoices);
