@@ -33,17 +33,14 @@ public class DPRandom {
      * @throws java.lang.CloneNotSupportedException
      */
     public ArrayList<LiteralH1> dp(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals, ArrayList<ClauseH1> startingList, ArrayList<LiteralH1> startingStatements) throws CloneNotSupportedException {
-//        System.out.println("Lijst is " + listOfClauses.size());
 
         if (listOfClauses.isEmpty()) {
-//            System.out.println("Done");
             return listOfLiterals;
         } else if (checkEmptyClause(listOfClauses)) {
-//            System.out.println("stop2");
             return null;
         }
 
-//copy of list
+        //copy of list
         ArrayList<ClauseH1> backupC = new ArrayList<>();
 
         Iterator<ClauseH1> iterator = listOfClauses.iterator();
@@ -58,61 +55,42 @@ public class DPRandom {
             backupL.add((LiteralH1) iterator2.next().clone());
         }
 
-//        System.out.println("DP");
-//        if (listOfClauses.isEmpty()) {
-//            System.out.println("Done");
-//            return listOfLiterals;
-//        } else if (checkEmptyClause(listOfClauses)) {
-//            System.out.println("stop2");
-//            return null;
-//        } else {
         checkUnitClause(listOfLiterals, listOfClauses);
 //            Don't know if we need this very timeconsuming
 //            checkPureLiteral(listOfClauses, listOfLiterals);
         if (!listOfClauses.isEmpty()) {
             int next = getNextUnknownLiteral(listOfLiterals);
             if (next == -1) {
-//                System.out.println("exit");
                 return null;
             }
             choicesAmount++;
             boolean random = r.nextBoolean();
-//            random = false;
-//                System.out.println("Choice");
             if (random) {
                 listOfLiterals.get(next).setValue(1);
-//                System.out.println(listOfLiterals.get(next).getName() + " = 1");
                 removeClause(listOfLiterals.get(next).getName(), listOfClauses);
             } else {
                 listOfLiterals.get(next).setValue(-1);
-//                System.out.println(listOfLiterals.get(next).getName() + " = -1");
                 removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
             }
-
-//            System.out.println("Lijst is " + listOfClauses.size());
+            
             listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals), new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
             if (listOfLiterals == null) {
                 wrongChoices++;
                 if (listOfClauses.equals(backupC)) {
-//                        System.out.println("Not Good");
                 }
                 listOfClauses = new ArrayList(backupC);
                 listOfLiterals = new ArrayList(backupL);
 
                 if (!random) {
                     listOfLiterals.get(next).setValue(1);
-//                    System.out.println(listOfLiterals.get(next).getName() + " = 1");
                     removeClause(listOfLiterals.get(next).getName(), listOfClauses);
                 } else {
                     listOfLiterals.get(next).setValue(-1);
-//                    System.out.println(listOfLiterals.get(next).getName() + " = -1");
                     removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
                 }
-//                    System.out.println("Lijst is " + listOfClauses.size());
 
                 listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals), new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
                 if (listOfLiterals == null) {
-//                    System.out.println("double exit");
                     return null;
                 } else if (listOfLiterals != null) {
                     return listOfLiterals;
@@ -123,15 +101,11 @@ public class DPRandom {
 
             }
             if (listOfClauses.isEmpty()) {
-//                    System.out.println("Done");
                 return listOfLiterals;
             } else if (checkEmptyClause(listOfClauses)) {
-//                    System.out.println("stop2");
                 return null;
             }
         }
-//        }
-//        System.out.println("test");
         return listOfLiterals;
     }
 
@@ -142,11 +116,9 @@ public class DPRandom {
     private boolean checkEmptyClause(ArrayList<ClauseH1> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getRules().isEmpty()) {
-//                System.out.println(list.get(i).getRules());
                 return true;
             }
         }
-//        System.out.println("not Empty");
         return false;
     }
 
@@ -165,15 +137,12 @@ public class DPRandom {
                     if ((list.get(j).getName() == variable) || (list.get(j).getName() == variable * -1)) {
 
                         if (variable > 0) {
-//                            System.out.println("Set " + variable + " 1");
                             list.get(j).setValue(1);
                             if (list.get(j).getName() == 716) {
-//                                System.out.println(list.get(j).getName());
                             }
                             removeClause(variable, clauses);
                             i = 0;
                         } else {
-//                            System.out.println("Set " + variable + " -1");
                             list.get(j).setValue(-1);
                             removeClause(variable, clauses);
                             i = 0;
@@ -197,11 +166,9 @@ public class DPRandom {
                 if (checkNumber(listOfLiterals.get(i).getName(), listOfClauses) == 1) {
                     listOfLiterals.get(i).setValue(1);
                     removeClause(listOfLiterals.get(i).getName(), listOfClauses);
-//                    System.out.println("Een pure");
                 } else if (checkNumber(listOfLiterals.get(i).getName(), listOfClauses) == -1) {
                     listOfLiterals.get(i).setValue(-1);
                     removeClause(listOfLiterals.get(i).getName() * -1, listOfClauses);
-//                    System.out.println("Een pure");
                 } else {
                 }
             }
@@ -256,7 +223,6 @@ public class DPRandom {
      * @param number is the literal which we want to remove.
      */
     private void removeClause(int number, ArrayList<ClauseH1> clauses) {
-//         System.out.println("verwijder: " + number);
 
         if (number > 0) {
             for (int i = 0; i < clauses.size(); i++) {

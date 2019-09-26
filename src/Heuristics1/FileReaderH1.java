@@ -48,7 +48,6 @@ public class FileReaderH1 {
         } catch (Exception e) {
             System.out.println(e);
         }
-        System.out.println("List size:  " + listOfLiterals.size());
         return list;
     }
 

@@ -32,7 +32,7 @@ public class Start {
     //index is the line of the list with sudokus
     private int index = 9;
     //dif is if what kind of sudoku you want. 4 = 4*4, 9 = 9*9 & 16 = 16*16
-    private int dif = 16;
+    private int dif = 9;
 
     private String path4;
     private String path9;
