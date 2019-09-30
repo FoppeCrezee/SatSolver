@@ -10,20 +10,24 @@ package Heuristics1;
  *
  * @author foppe
  */
-public class LiteralH1 implements Cloneable {
+public class Literal implements Cloneable {
 
     private int name;
     private int value = 0;
+    private int countPos;
+    private int totaalPos;
+    private int countNeg;
+    private int totaalnNeg;
 
-    public LiteralH1(int name) {
+    public Literal(int name) {
         this.name = name;
     }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        LiteralH1 clone = null;
+        Literal clone = null;
         try {
-            clone = (LiteralH1) super.clone();
+            clone = (Literal) super.clone();
 
             //Copy new date object to cloned method
 //            clone.setValue((int) this.getValue().clone());
@@ -40,8 +44,26 @@ public class LiteralH1 implements Cloneable {
     public int getName() {
         return name;
     }
+    
+    public void setCountPos(int countPos) {
+        this.countPos = countPos;
+    }
+    
+    public void setCountNeg(int countNeg){
+        this.countNeg = countNeg;
+    }
 
     public int getValue() {
         return value;
     }
+    
+    public int getCountPos() {
+        return countPos;
+    }
+    
+    public int getCountNeg(){
+        return countNeg;
+    }
+    
+    
 }

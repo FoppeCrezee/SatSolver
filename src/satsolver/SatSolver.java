@@ -5,9 +5,6 @@
  */
 package satsolver;
 
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 /**
  * Starts the whole algorithm
  *

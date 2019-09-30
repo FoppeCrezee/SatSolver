@@ -5,13 +5,11 @@
  */
 package satsolver;
 
-import Heuristics1.FileReaderH1;
-import Heuristics1.LiteralH1;
+import Heuristics1.FileReader;
+import Heuristics1.Literal;
 import Heuristics1.DPRandom;
-import Heuristics1.ClauseH1;
+import Heuristics1.Clause;
 import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,16 +17,19 @@ import javax.swing.JOptionPane;
  */
 public class Start {
 
-    private ArrayList<ClauseH1> clauses;
-    private ArrayList<LiteralH1> statementsFinal;
-    //all clauses from reading the sudoku
-    private ArrayList<ClauseH1> sudokuClauses;
+    public static final int SUDOKU4 = 4;
+    public static final int SUDOKU9 = 9;
+    public static final int SUDOKU16 = 16;
+
+    private ArrayList<Clause> clauses;
+    private ArrayList<Literal> statementsFinal;
+    private ArrayList<Clause> sudokuClauses;
 
     private int time = 0;
     private int timeReader = 0;
 
     //index is the line of the list with sudokus
-    private int index = 8;
+    private int index = 2;
     //dif is if what kind of sudoku you want. 4 = 4*4, 9 = 9*9 & 16 = 16*16
     private int dif = 4;
 
@@ -42,13 +43,19 @@ public class Start {
     private int heuristics;
     private String fileName;
 
+    /**
+     * @param heuristics number for which heuristics to use. 1 = random. 2 & 3
+     * will be implemented later.
+     * @param fileName name of the file with all the clauses which needs to be
+     * solved.
+     */
     public Start(int heuristics, String fileName) {
         this.heuristics = heuristics;
         this.fileName = fileName;
     }
 
     public void main() throws CloneNotSupportedException {
-        clauses = new ArrayList<ClauseH1>();
+        clauses = new ArrayList<Clause>();
         path4 = "C:\\Users\\foppe\\Desktop\\sudoku-rules-4x4.txt";
         path9 = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
         path16 = "C:\\Users\\foppe\\Desktop\\sudoku-rules-16x16.txt";
@@ -56,10 +63,11 @@ public class Start {
         sudokuPath9 = "C:\\Users\\foppe\\Desktop\\Dmnhard.sdk.txt";
         sudokuPath4 = "C:\\Users\\foppe\\Desktop\\4x4.txt";
 
-        if (heuristics == 1) {
-            H1();
-        }
+        H1();
 
+//         else if(heuristics == 2){
+//            H2();
+//        }
     }
 
     private void H1() throws CloneNotSupportedException {
@@ -67,18 +75,18 @@ public class Start {
         int milis_startTimeReader = 0;
         milis_startTimeReader = (int) System.currentTimeMillis();
 
-        if (dif == 4) {
-            FileReaderH1 reader = new FileReaderH1(path4);
+        if (dif == SUDOKU4) {
+            FileReader reader = new FileReader(path4);
             statementsFinal = reader.getStatements();
             clauses = reader.main();
             sudokuClauses = reader.SudokuReader4(sudokuPath4, index);
-        } else if (dif == 9) {
-            FileReaderH1 reader = new FileReaderH1(path9);
+        } else if (dif == SUDOKU9) {
+            FileReader reader = new FileReader(path9);
             statementsFinal = reader.getStatements();
             clauses = reader.main();
             sudokuClauses = reader.SudokuReader9(sudokuPath9, index);
         } else {
-            FileReaderH1 reader = new FileReaderH1(path16);
+            FileReader reader = new FileReader(path16);
             statementsFinal = reader.getStatements();
             clauses = reader.main();
             sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
@@ -96,7 +104,7 @@ public class Start {
         milis_startTime = (int) System.currentTimeMillis();
 
         //Starts DP algorithm
-        DPRandom rulesReader = new DPRandom();
+        DPRandom rulesReader = new DPRandom(heuristics);
         statementsFinal = rulesReader.dp(clauses, statementsFinal);
 
         //Ends dp timer
@@ -106,9 +114,9 @@ public class Start {
 
         //prints the result
         Printer printer = new Printer(statementsFinal, timeReader, time);
-        if (dif == 4) {
+        if (dif == SUDOKU4) {
             printer.printStatements4();
-        } else if (dif == 9) {
+        } else if (dif == SUDOKU9) {
             printer.printStatements9();
         } else {
             printer.printStatements16();

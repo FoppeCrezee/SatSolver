@@ -12,14 +12,14 @@ import java.util.ArrayList;
  *
  * @author foppe
  */
-public class ClauseH1 implements Cloneable {
+public class Clause implements Cloneable {
 
     private boolean isTrue = false;
     private ArrayList<Integer> statements = new ArrayList<Integer>();
 
     String lijn = "";
 
-    public ClauseH1(String list) {
+    public Clause(String list) {
         for (int i = 0; i < list.length(); i++) {
             if (!list.substring(i, i + 1).equals(" ")) {
                 lijn = lijn + list.substring(i, i + 1);
@@ -33,9 +33,9 @@ public class ClauseH1 implements Cloneable {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        ClauseH1 clone = null;
+        Clause clone = null;
         try {
-            clone = (ClauseH1) super.clone();
+            clone = (Clause) super.clone();
 
             //Copy new date object to cloned method
             clone.setRules((ArrayList<Integer>) this.getRules().clone());
@@ -71,6 +71,19 @@ public class ClauseH1 implements Cloneable {
 
     public ArrayList<Integer> getRules() {
         return statements;
+    }
+    
+    public int getSize(){
+        return statements.size();
+    }
+    
+    public boolean containsLiteral(int variable){
+        for(Integer number : statements){
+            if(number == variable){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean checkRulePositive(int number) {

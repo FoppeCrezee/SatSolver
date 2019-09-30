@@ -19,6 +19,12 @@ public class DPRandom {
     private Random r = new Random();
     private int choicesAmount = 0;
     private int wrongChoices = 0;
+    private int heuristics;
+//    private int h = 1;
+    
+    public DPRandom(int heuristics){
+        this.heuristics = heuristics;
+    }
 
     /**
      * Is the main algorithm which consist of checking if there is a unit
@@ -30,7 +36,7 @@ public class DPRandom {
      * @return This returns an ArrayList with all the statements
      * @throws java.lang.CloneNotSupportedException
      */
-    public ArrayList<LiteralH1> dp(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals) throws CloneNotSupportedException {
+    public ArrayList<Literal> dp(ArrayList<Clause> listOfClauses, ArrayList<Literal> listOfLiterals) throws CloneNotSupportedException {
 
         if (listOfClauses.isEmpty()) {
             return listOfLiterals;
@@ -39,39 +45,59 @@ public class DPRandom {
         }
 
         //copy of list
-        ArrayList<ClauseH1> backupC = new ArrayList<>();
+        ArrayList<Clause> backupC = new ArrayList<>();
 
-        Iterator<ClauseH1> iterator = listOfClauses.iterator();
+        Iterator<Clause> iterator = listOfClauses.iterator();
         while (iterator.hasNext()) {
-            backupC.add((ClauseH1) iterator.next().clone());
+            backupC.add((Clause) iterator.next().clone());
         }
         //copy of list
-        ArrayList<LiteralH1> backupL = new ArrayList<LiteralH1>();
+        ArrayList<Literal> backupL = new ArrayList<Literal>();
 
-        Iterator<LiteralH1> iterator2 = listOfLiterals.iterator();
+        Iterator<Literal> iterator2 = listOfLiterals.iterator();
         while (iterator2.hasNext()) {
-            backupL.add((LiteralH1) iterator2.next().clone());
+            backupL.add((Literal) iterator2.next().clone());
         }
 
         checkUnitClause(listOfLiterals, listOfClauses);
 //            Don't know if we need this very timeconsuming
 //            checkPureLiteral(listOfClauses, listOfLiterals);
         if (!listOfClauses.isEmpty()) {
-            int next = getNextUnknownLiteral(listOfLiterals);
+            int next = -1;
+            boolean random = false;
+            if (heuristics == 0) {
+                random = r.nextBoolean();
+                next = getNextUnknownLiteral(listOfLiterals);
+            } else if (heuristics == 1) {
+                next = calculateRatio(listOfLiterals, listOfClauses);
+                if (next > 0) {
+                    random = true;
+                    next = this.getIndex(listOfLiterals, next);
+                } else {
+                    random = false;
+                    next = this.getIndex(listOfLiterals, next);
+                }
+
+            }
+
+//            int 
             if (next == -1) {
                 return null;
             }
+
             choicesAmount++;
-            boolean random = r.nextBoolean();
+//            random = false;
             if (random) {
                 listOfLiterals.get(next).setValue(1);
+                System.out.println(listOfLiterals.get(next).getName() + " : " + 1);
                 removeClause(listOfLiterals.get(next).getName(), listOfClauses);
             } else {
                 listOfLiterals.get(next).setValue(-1);
+                System.out.println(listOfLiterals.get(next).getName() + " : " + -1);
                 removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
             }
-            
-            listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
+
+            listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
             if (listOfLiterals == null) {
                 wrongChoices++;
                 if (listOfClauses.equals(backupC)) {
@@ -87,7 +113,7 @@ public class DPRandom {
                     removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
                 }
 
-                listOfLiterals = this.dp(new ArrayList<ClauseH1>(listOfClauses), new ArrayList<LiteralH1>(listOfLiterals));
+                listOfLiterals = this.dp(new ArrayList<Clause>(listOfClauses), new ArrayList<Literal>(listOfLiterals));
                 if (listOfLiterals == null) {
                     return null;
                 } else if (listOfLiterals != null) {
@@ -111,7 +137,7 @@ public class DPRandom {
      * @return returns true if there is an empty clause in the list. Returns
      * false if no empty list has been found.
      */
-    private boolean checkEmptyClause(ArrayList<ClauseH1> list) {
+    private boolean checkEmptyClause(ArrayList<Clause> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getRules().isEmpty()) {
                 return true;
@@ -120,11 +146,29 @@ public class DPRandom {
         return false;
     }
 
+    private int getIndex(ArrayList<Literal> listOfLiterals, int next) {
+        if (next > 0) {
+            for (int i = 0; i < listOfLiterals.size(); i++) {
+                if (listOfLiterals.get(i).getName() == next) {
+                    return i;
+                }
+            }
+        } else {
+            next = next * -1;
+            for (int i = 0; i < listOfLiterals.size(); i++) {
+                if (listOfLiterals.get(i).getName() == next) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
     /**
      * @return Returns an ArrayList with all the statements after checking if
      * there is a unit clause
      */
-    private ArrayList<LiteralH1> checkUnitClause(ArrayList<LiteralH1> list, ArrayList<ClauseH1> clauses) {
+    private ArrayList<Literal> checkUnitClause(ArrayList<Literal> list, ArrayList<Clause> clauses) {
         int variable = 0;
 
         for (int i = 0; i < clauses.size(); i++) {
@@ -159,9 +203,9 @@ public class DPRandom {
     }
 
     /**
-     * @deprecated 
+     * @deprecated
      */
-    private ArrayList<LiteralH1> checkPureLiteral(ArrayList<ClauseH1> listOfClauses, ArrayList<LiteralH1> listOfLiterals) {
+    private ArrayList<Literal> checkPureLiteral(ArrayList<Clause> listOfClauses, ArrayList<Literal> listOfLiterals) {
         for (int i = 0; i < listOfLiterals.size(); i++) {
             if (listOfLiterals.get(i).getValue() == 0) {
                 if (checkNumber(listOfLiterals.get(i).getName(), listOfClauses) == 1) {
@@ -179,10 +223,12 @@ public class DPRandom {
 
     /**
      * Gives you the next Literal in the list which has no value
+     *
      * @param listOfLiterals is the list with all the literals
-     * @return the index of the literal in the array. returns -1 if no unknown literal is found
+     * @return the index of the literal in the array. returns -1 if no unknown
+     * literal is found
      */
-    private int getNextUnknownLiteral(ArrayList<LiteralH1> listOfLiterals) {
+    private int getNextUnknownLiteral(ArrayList<Literal> listOfLiterals) {
         try {
             for (int i = 0; i < listOfLiterals.size(); i++) {
                 if (listOfLiterals.get(i).getValue() == 0) {
@@ -196,7 +242,7 @@ public class DPRandom {
         return -1;
     }
 
-    private int checkNumber(int number, ArrayList<ClauseH1> listOfCLauses) {
+    private int checkNumber(int number, ArrayList<Clause> listOfCLauses) {
         int positive = 0;
         int negative = 0;
         for (int i = 0; i < listOfCLauses.size(); i++) {
@@ -215,11 +261,11 @@ public class DPRandom {
             return 0;
         }
     }
-    
+
     /**
      * prints the amount of choices made in the algorithm
      */
-    public void printAmount(){
+    public void printAmount() {
         System.out.println("Amount of Choices: " + choicesAmount);
         System.out.println("Wrong coices: " + wrongChoices);
     }
@@ -231,7 +277,7 @@ public class DPRandom {
      *
      * @param number is the literal which we want to remove.
      */
-    private void removeClause(int number, ArrayList<ClauseH1> clauses) {
+    private void removeClause(int number, ArrayList<Clause> clauses) {
 
         if (number > 0) {
             for (int i = 0; i < clauses.size(); i++) {
@@ -255,6 +301,44 @@ public class DPRandom {
                 }
             }
         }
+
+    }
+
+    private ArrayList<Integer> getAllUnknownLiterals(ArrayList<Literal> listOfLiterals) {
+        ArrayList<Integer> unknownLiterals = new ArrayList<>();
+        for (Literal literal : listOfLiterals) {
+            if (literal.getValue() == 0) {
+                unknownLiterals.add(literal.getName());
+                unknownLiterals.add(literal.getName() * -1);
+            }
+        }
+        return unknownLiterals;
+    }
+
+    private int calculateRatio(ArrayList<Literal> listOfLiterals, ArrayList<Clause> listOfClauses) {
+        ArrayList<Integer> list = getAllUnknownLiterals(listOfLiterals);
+        int highestCount = 0;
+        int highestLiteral = -1;
+        
+
+        for (Integer variable : list) {
+            int count = 0;
+            for (Clause clause : listOfClauses) {
+                if (clause.containsLiteral(variable)) {
+                    count++;
+                }
+                if (clause.containsLiteral(variable * -1) && clause.getSize() == 2) {
+                    count++;
+                }
+            }
+//            System.out.println(variable + " : " + count);
+            if (count >= highestCount) {
+                highestCount = count;
+                highestLiteral = variable;
+            }
+        }
+        System.out.println(highestLiteral + " " + highestCount);
+        return highestLiteral;
 
     }
 

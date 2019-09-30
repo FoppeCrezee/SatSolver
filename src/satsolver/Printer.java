@@ -5,7 +5,7 @@
  */
 package satsolver;
 
-import Heuristics1.LiteralH1;
+import Heuristics1.Literal;
 import java.util.ArrayList;
 
 /**
@@ -14,11 +14,11 @@ import java.util.ArrayList;
  */
 public class Printer {
     
-    private ArrayList<LiteralH1> statementsFinal;
+    private ArrayList<Literal> statementsFinal;
     private int time;
     private int timeReader;
 
-    public Printer(ArrayList<LiteralH1> statementsFinal, int timeReader, int time) {
+    public Printer(ArrayList<Literal> statementsFinal, int timeReader, int time) {
         this.statementsFinal = statementsFinal;
         this.time = time;
         this.timeReader = timeReader;
