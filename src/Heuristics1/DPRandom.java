@@ -21,8 +21,8 @@ public class DPRandom {
     private int wrongChoices = 0;
     private int heuristics;
 //    private int h = 1;
-    
-    public DPRandom(int heuristics){
+
+    public DPRandom(int heuristics) {
         this.heuristics = heuristics;
     }
 
@@ -64,12 +64,14 @@ public class DPRandom {
 //            checkPureLiteral(listOfClauses, listOfLiterals);
         if (!listOfClauses.isEmpty()) {
             int next = -1;
-            boolean random = false;
+            boolean random = r.nextBoolean();
             if (heuristics == 0) {
                 random = r.nextBoolean();
                 next = getNextUnknownLiteral(listOfLiterals);
             } else if (heuristics == 1) {
-                next = calculateRatio(listOfLiterals, listOfClauses);
+//                if (listOfClauses.size() > 1500) {
+//                    System.out.println("More then 1500");
+                next = MOM(listOfLiterals, listOfClauses);
                 if (next > 0) {
                     random = true;
                     next = this.getIndex(listOfLiterals, next);
@@ -77,23 +79,24 @@ public class DPRandom {
                     random = false;
                     next = this.getIndex(listOfLiterals, next);
                 }
+//                } else {
+//                    System.out.println("Less then 1500");
+//                    random = r.nextBoolean();
+//                    next = getNextUnknownLiteral(listOfLiterals);
+//                }
 
             }
-
-//            int 
             if (next == -1) {
                 return null;
             }
-
             choicesAmount++;
-//            random = false;
             if (random) {
                 listOfLiterals.get(next).setValue(1);
-                System.out.println(listOfLiterals.get(next).getName() + " : " + 1);
+//                System.out.println(listOfLiterals.get(next).getName() + " : " + 1);
                 removeClause(listOfLiterals.get(next).getName(), listOfClauses);
             } else {
                 listOfLiterals.get(next).setValue(-1);
-                System.out.println(listOfLiterals.get(next).getName() + " : " + -1);
+//                System.out.println(listOfLiterals.get(next).getName() + " : " + -1);
                 removeClause(listOfLiterals.get(next).getName() * -1, listOfClauses);
             }
 
@@ -189,9 +192,7 @@ public class DPRandom {
                             removeClause(variable, clauses);
                             i = 0;
                         }
-
                     }
-
                 }
             }
         }
@@ -309,37 +310,58 @@ public class DPRandom {
         for (Literal literal : listOfLiterals) {
             if (literal.getValue() == 0) {
                 unknownLiterals.add(literal.getName());
-                unknownLiterals.add(literal.getName() * -1);
+//                unknownLiterals.add(literal.getName() * -1);
             }
         }
         return unknownLiterals;
     }
 
-    private int calculateRatio(ArrayList<Literal> listOfLiterals, ArrayList<Clause> listOfClauses) {
-        ArrayList<Integer> list = getAllUnknownLiterals(listOfLiterals);
-        int highestCount = 0;
-        int highestLiteral = -1;
-        
-
-        for (Integer variable : list) {
-            int count = 0;
-            for (Clause clause : listOfClauses) {
-                if (clause.containsLiteral(variable)) {
-                    count++;
-                }
-                if (clause.containsLiteral(variable * -1) && clause.getSize() == 2) {
-                    count++;
-                }
-            }
-//            System.out.println(variable + " : " + count);
-            if (count >= highestCount) {
-                highestCount = count;
-                highestLiteral = variable;
+    private int getMinimumClauseSize(ArrayList<Clause> listOfClauses) {
+        int minimum = 1000;
+        for (Clause clause : listOfClauses) {
+            if (clause.getSize() < minimum) {
+                minimum = clause.getSize();
             }
         }
-        System.out.println(highestLiteral + " " + highestCount);
-        return highestLiteral;
-
+        if (minimum == 1000) {
+            System.out.println("STOP");
+            return -1;
+        }else{
+            return minimum;
+        }
     }
 
+    private int MOM(ArrayList<Literal> listOfLiterals, ArrayList<Clause> listOfClauses) {
+        ArrayList<Integer> list = getAllUnknownLiterals(listOfLiterals);
+        double highestRatio = 0;
+        int highestLiteral = -1;
+        int minimum = this.getMinimumClauseSize(listOfClauses);
+
+//        if(this.getNextUnknownLiteral(listOfLiterals) == -1){
+//            return highestLiteral;
+//        }
+        for (Integer variable : list) {
+            int countPos = 0;
+            int countNeg = 0;
+            for (Clause clause : listOfClauses) {
+                if (clause.containsLiteral(variable) && clause.getSize() == minimum) {
+                    countPos++;
+                } else if (clause.containsLiteral(variable * -1) && clause.getSize() == minimum) {
+                    countNeg++;
+                }
+            }
+            double ratio = (countPos + countNeg) * Math.pow(2, 2) + countPos * countNeg;
+//            System.out.println(variable + " : " + count);
+            if (ratio >= highestRatio) {
+                highestRatio = ratio;
+                if (countPos >= countNeg) {
+                    highestLiteral = variable;
+                } else {
+                    highestLiteral = variable * -1;
+                }
+            }
+        }
+        System.out.println(highestLiteral + " : " + highestRatio);
+        return highestLiteral;
+    }
 }

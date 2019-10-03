@@ -29,9 +29,9 @@ public class Start {
     private int timeReader = 0;
 
     //index is the line of the list with sudokus
-    private int index = 2;
+    private int index =0;
     //dif is if what kind of sudoku you want. 4 = 4*4, 9 = 9*9 & 16 = 16*16
-    private int dif = 4;
+    private int dif = 9;
 
     private String path4;
     private String path9;
@@ -60,7 +60,7 @@ public class Start {
         path9 = "C:\\Users\\foppe\\Desktop\\sudoku-rules.txt";
         path16 = "C:\\Users\\foppe\\Desktop\\sudoku-rules-16x16.txt";
         sudokuPath16 = "C:\\Users\\foppe\\Desktop\\16x16.txt";
-        sudokuPath9 = "C:\\Users\\foppe\\Desktop\\Dmnhard.sdk.txt";
+        sudokuPath9 = "C:\\Users\\foppe\\Desktop\\damnhard.sdk.txt";
         sudokuPath4 = "C:\\Users\\foppe\\Desktop\\4x4.txt";
 
         H1();
@@ -121,8 +121,6 @@ public class Start {
         } else {
             printer.printStatements16();
         }
-
         rulesReader.printAmount();
     }
-
 }
