@@ -29,9 +29,9 @@ public class Start {
     private int timeReader = 0;
 
     //index is the line of the list with sudokus
-    private int index =0;
+    private int index = 0;
     //dif is if what kind of sudoku you want. 4 = 4*4, 9 = 9*9 & 16 = 16*16
-    private int dif = 9;
+    private int dif = 4;
 
     private String path4;
     private String path9;
@@ -52,6 +52,11 @@ public class Start {
     public Start(int heuristics, String fileName) {
         this.heuristics = heuristics;
         this.fileName = fileName;
+
+        if (heuristics != 1 && heuristics != 2 && heuristics != 3) {
+            System.out.println("Give a valid heuristic: " + "\n" + "-S1 for random" + "\n" + "-S2 for MOM" + "\n" + "-S3 for FLSC");
+            System.exit(0);
+        }
     }
 
     public void main() throws CloneNotSupportedException {
@@ -75,24 +80,28 @@ public class Start {
         int milis_startTimeReader = 0;
         milis_startTimeReader = (int) System.currentTimeMillis();
 
-        if (dif == SUDOKU4) {
-            FileReader reader = new FileReader(path4);
-            statementsFinal = reader.getStatements();
-            clauses = reader.main();
-            sudokuClauses = reader.SudokuReader4(sudokuPath4, index);
-        } else if (dif == SUDOKU9) {
-            FileReader reader = new FileReader(path9);
-            statementsFinal = reader.getStatements();
-            clauses = reader.main();
-            sudokuClauses = reader.SudokuReader9(sudokuPath9, index);
-        } else {
-            FileReader reader = new FileReader(path16);
-            statementsFinal = reader.getStatements();
-            clauses = reader.main();
-            sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
-        }
+//        if (dif == SUDOKU4) {
+//            FileReader reader = new FileReader(path4);
+//            statementsFinal = reader.getStatements();
+//            clauses = reader.main();
+//            sudokuClauses = reader.SudokuReader4(sudokuPath4, index);
+//        } else if (dif == SUDOKU9) {
+//            FileReader reader = new FileReader(path9);
+//            statementsFinal = reader.getStatements();
+//            clauses = reader.main();
+//            sudokuClauses = reader.SudokuReader9(sudokuPath9, index);
+//        } else {
+//            FileReader reader = new FileReader(path16);
+//            statementsFinal = reader.getStatements();
+//            clauses = reader.main();
+//            sudokuClauses = reader.SudokuReader16(sudokuPath16, index);
+//        }
+//
+//        clauses.addAll(sudokuClauses);
 
-        clauses.addAll(sudokuClauses);
+        FileReader reader = new FileReader(fileName);
+        statementsFinal = reader.getStatements();
+        clauses = reader.main();
 
         //Ends the timer for reading the file
         int millis_endTimeReader = 0;
@@ -114,13 +123,14 @@ public class Start {
 
         //prints the result
         Printer printer = new Printer(statementsFinal, timeReader, time);
-        if (dif == SUDOKU4) {
-            printer.printStatements4();
-        } else if (dif == SUDOKU9) {
-            printer.printStatements9();
-        } else {
-            printer.printStatements16();
-        }
+        printer.nomralPrint();
+//        if (dif == SUDOKU4) {
+//            printer.printStatements4();
+//        } else if (dif == SUDOKU9) {
+//            printer.printStatements9();
+//        } else {
+//            printer.printStatements16();
+//        }
         rulesReader.printAmount();
     }
 }

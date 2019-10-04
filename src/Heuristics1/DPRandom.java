@@ -62,15 +62,17 @@ public class DPRandom {
         checkUnitClause(listOfLiterals, listOfClauses);
 //            Don't know if we need this very timeconsuming
 //            checkPureLiteral(listOfClauses, listOfLiterals);
+        if (checkEmptyClause(listOfClauses)) {
+            return null;
+        }
+
         if (!listOfClauses.isEmpty()) {
             int next = -1;
             boolean random = r.nextBoolean();
-            if (heuristics == 0) {
+            if (heuristics == 1) {
                 random = r.nextBoolean();
-                next = getNextUnknownLiteral(listOfLiterals);
-            } else if (heuristics == 1) {
-//                if (listOfClauses.size() > 1500) {
-//                    System.out.println("More then 1500");
+                next = this.getIndex(listOfLiterals, getNextUnknownLiteral(listOfLiterals));
+            } else if (heuristics == 2) {
                 next = MOM(listOfLiterals, listOfClauses);
                 if (next > 0) {
                     random = true;
@@ -79,12 +81,15 @@ public class DPRandom {
                     random = false;
                     next = this.getIndex(listOfLiterals, next);
                 }
-//                } else {
-//                    System.out.println("Less then 1500");
-//                    random = r.nextBoolean();
-//                    next = getNextUnknownLiteral(listOfLiterals);
-//                }
-
+            } else if (heuristics == 3) {
+                next = this.nextLiteral(listOfLiterals, listOfClauses);
+                if (next > 0) {
+                    random = true;
+                    next = this.getIndex(listOfLiterals, next);
+                } else {
+                    random = false;
+                    next = this.getIndex(listOfLiterals, next);
+                }
             }
             if (next == -1) {
                 return null;
@@ -230,17 +235,25 @@ public class DPRandom {
      * literal is found
      */
     private int getNextUnknownLiteral(ArrayList<Literal> listOfLiterals) {
-        try {
-            for (int i = 0; i < listOfLiterals.size(); i++) {
-                if (listOfLiterals.get(i).getValue() == 0) {
-                    return i;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e);
+        ArrayList<Integer> list = this.getAllUnknownLiterals(listOfLiterals);
+        Random r = new Random();
+        if (list.isEmpty()) {
             return -1;
+        } else {
+            return list.get(r.nextInt(list.size()));
         }
-        return -1;
+//        
+//        try {
+//            for (int i = 0; i < listOfLiterals.size(); i++) {
+//                if (listOfLiterals.get(i).getValue() == 0) {
+//                    return i;
+//                }
+//            }
+//        } catch (Exception e) {
+//            System.out.println(e);
+//            return -1;
+//        }
+//        return -1;
     }
 
     private int checkNumber(int number, ArrayList<Clause> listOfCLauses) {
@@ -317,16 +330,16 @@ public class DPRandom {
     }
 
     private int getMinimumClauseSize(ArrayList<Clause> listOfClauses) {
-        int minimum = 1000;
+        int minimum = Integer.MAX_VALUE;
         for (Clause clause : listOfClauses) {
             if (clause.getSize() < minimum) {
                 minimum = clause.getSize();
             }
         }
-        if (minimum == 1000) {
+        if (minimum == Integer.MAX_VALUE) {
             System.out.println("STOP");
             return -1;
-        }else{
+        } else {
             return minimum;
         }
     }
@@ -336,6 +349,7 @@ public class DPRandom {
         double highestRatio = 0;
         int highestLiteral = -1;
         int minimum = this.getMinimumClauseSize(listOfClauses);
+//        System.out.println(minimum);
 
 //        if(this.getNextUnknownLiteral(listOfLiterals) == -1){
 //            return highestLiteral;
@@ -361,7 +375,22 @@ public class DPRandom {
                 }
             }
         }
-        System.out.println(highestLiteral + " : " + highestRatio);
+//        System.out.println(highestLiteral + " : " + highestRatio);
         return highestLiteral;
+    }
+
+    private int nextLiteral(ArrayList<Literal> listOfLiterals, ArrayList<Clause> listOfClauses) {
+        int minimum = this.getMinimumClauseSize(listOfClauses);
+        ArrayList<Integer> list = getAllUnknownLiterals(listOfLiterals);
+        if (list.size() == minimum) {
+            System.out.println("Leeg");
+            return -1;
+        }
+        for (Clause clause : listOfClauses) {
+            if (clause.getSize() == 2) {
+                return clause.getRules().get(0);
+            }
+        }
+        return -1;
     }
 }

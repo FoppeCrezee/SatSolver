@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author foppe
  */
 public class Printer {
-    
+
     private ArrayList<Literal> statementsFinal;
     private int time;
     private int timeReader;
@@ -22,6 +22,20 @@ public class Printer {
         this.statementsFinal = statementsFinal;
         this.time = time;
         this.timeReader = timeReader;
+    }
+
+    public void nomralPrint() {
+        System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
+        System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
+        System.out.println("Answerset: ");
+        for (Literal literal : statementsFinal) {
+            if (literal.getValue() > 0) {
+                System.out.println(literal.getName() + " 0");
+            }
+//            else{
+//                System.out.println("-" + literal.getName());
+//            }
+        }
     }
 
     public void printStatements4() {
@@ -68,8 +82,8 @@ public class Printer {
         }
 
     }
-    
-      public void printStatements9() {
+
+    public void printStatements9() {
 
         System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
         System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
@@ -113,8 +127,8 @@ public class Printer {
         }
 
     }
-      
-         public void printStatements16() {
+
+    public void printStatements16() {
 
         System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
         System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
