@@ -6,7 +6,12 @@
 package satsolver;
 
 import Heuristics1.Literal;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -25,17 +30,38 @@ public class Printer {
     }
 
     public void nomralPrint() {
+        int amount = 0;
+        int highest = 0;
+        for (Literal literal : statementsFinal) {
+            if(literal.getValue() > 0){
+                amount++;
+                if(literal.getName() > highest){
+                    highest = literal.getName();
+                }
+            }
+        }
+        
         System.out.println("Reading file took: " + timeReader * 0.001 + " seconds");
         System.out.println("Calculating solution took: " + time * 0.001 + " seconds");
-        System.out.println("Answerset: ");
-        for (Literal literal : statementsFinal) {
-            if (literal.getValue() > 0) {
-                System.out.println(literal.getName() + " 0");
+        
+        PrintWriter writer;
+        
+        try {
+            writer = new PrintWriter("answerset.txt", "UTF-8");
+            writer.println("p cnf " + highest + " " +  amount);
+            for (Literal literal : statementsFinal) {
+                if (literal.getValue() > 0) {
+                    writer.println(literal.getName() + " 0");
+                }
             }
-//            else{
-//                System.out.println("-" + literal.getName());
-//            }
+            writer.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("Answerset can be found in: SAT/answerset.txt");
+
     }
 
     public void printStatements4() {
